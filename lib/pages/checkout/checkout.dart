@@ -384,6 +384,9 @@ class _CheckoutState extends State<Checkout> {
                           )
                         ],
                       ),
+                    ),
+                    const SizedBox(
+                      height: 15,
                     )
                   ],
                 )),
