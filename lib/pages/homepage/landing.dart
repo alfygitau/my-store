@@ -349,7 +349,7 @@ class _LandingState extends State<Landing> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: const Color(0xFF12B981),
         unselectedItemColor: Colors.grey,
         unselectedLabelStyle: const TextStyle(color: Colors.grey),
         showUnselectedLabels: true,
