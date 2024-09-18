@@ -1,3 +1,4 @@
+import 'package:e_store/pages/products/product.dart';
 import 'package:flutter/material.dart';
 
 class Products extends StatefulWidget {
@@ -98,108 +99,121 @@ class _ProductsState extends State<Products> {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             children: [
-                              Container(
-                                height: 130,
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 10),
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      height: 100,
-                                      width: 100,
-                                      decoration: const BoxDecoration(
+                              GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Product()),
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 130,
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 10),
+                                    width: double.infinity,
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white,
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: Image.asset(
-                                          'assets/images/seed-category.jpeg',
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                        child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                            Radius.circular(5))),
+                                    child: Row(
                                       children: [
-                                        const Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Hybrid seeds',
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black),
-                                            textAlign: TextAlign.left,
+                                        Container(
+                                          height: 100,
+                                          width: 100,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            child: Image.asset(
+                                              'assets/images/seed-category.jpeg',
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(
-                                          height: 10,
+                                          width: 10,
                                         ),
-                                        const Text(
-                                          'A premium maize seeds to optimize your yields',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            color: Colors.grey,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
+                                        Expanded(
+                                            child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.center,
                                           children: [
+                                            const Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                'Hybrid seeds',
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.black),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
                                             const Text(
-                                              "KES 1200.00",
+                                              'A premium maize seeds to optimize your yields',
                                               style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.bold),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.grey,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
                                             ),
                                             Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Container(
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          width: 1,
-                                                          color: Colors.grey),
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  5))),
-                                                  child: const Center(
-                                                    child: Icon(Icons.remove),
-                                                  ),
+                                                const Text(
+                                                  "KES 1200.00",
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                                 ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                const Text('0'),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Container(
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration:
-                                                      const BoxDecoration(
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.grey),
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          5))),
+                                                      child: const Center(
+                                                        child:
+                                                            Icon(Icons.remove),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    const Text('0'),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: const BoxDecoration(
                                                           color:
                                                               Color(0xFF12B981),
                                                           borderRadius:
@@ -207,22 +221,22 @@ class _ProductsState extends State<Products> {
                                                                   Radius
                                                                       .circular(
                                                                           5))),
-                                                  child: const Center(
-                                                    child: Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
+                                                      child: const Center(
+                                                        child: Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
+                                                  ],
+                                                )
                                               ],
                                             )
                                           ],
-                                        )
+                                        ))
                                       ],
-                                    ))
-                                  ],
-                                ),
-                              )
+                                    ),
+                                  ))
                             ],
                           ),
                         );
