@@ -91,7 +91,7 @@ class _LandingState extends State<Landing> {
                 child: CarouselSlider(
                   options: CarouselOptions(
                     height: 150.0,
-                    autoPlay: true,
+                    autoPlay: false,
                     aspectRatio: 16 / 9,
                     autoPlayInterval: const Duration(seconds: 3),
                     viewportFraction: 1.0,

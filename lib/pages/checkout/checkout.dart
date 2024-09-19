@@ -255,8 +255,8 @@ class _CheckoutState extends State<Checkout> {
                                   fontWeight: FontWeight.normal),
                             ),
                           ),
-                          const Divider(
-                            color: Colors.grey,
+                          Divider(
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
                           Row(
@@ -280,8 +280,8 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ],
                           ),
-                          const Divider(
-                            color: Colors.grey,
+                          Divider(
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
                           Row(
@@ -305,8 +305,8 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ],
                           ),
-                          const Divider(
-                            color: Colors.grey,
+                          Divider(
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
                           Row(
@@ -329,8 +329,8 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ],
                           ),
-                          const Divider(
-                            color: Colors.grey,
+                          Divider(
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
                         ],
