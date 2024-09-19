@@ -165,9 +165,9 @@ class _CartState extends State<Cart> {
                   decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      Align(
+                      const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "PRICE DETAILS",
@@ -177,17 +177,17 @@ class _CartState extends State<Cart> {
                               fontWeight: FontWeight.normal),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Divider(
-                        color: Colors.grey,
+                        color: Colors.grey[300],
                         thickness: 1,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Align(
@@ -212,17 +212,17 @@ class _CartState extends State<Cart> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Divider(
-                        color: Colors.grey,
+                        color: Colors.grey[300],
                         thickness: 1,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Align(
@@ -247,17 +247,17 @@ class _CartState extends State<Cart> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Divider(
-                        color: Colors.grey,
+                        color: Colors.grey[300],
                         thickness: 1,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      Align(
+                      const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "You saved KES 120.00 on this order",
