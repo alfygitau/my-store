@@ -1,3 +1,4 @@
+import 'package:e_store/models/Product.dart';
 import 'package:e_store/pages/cart/cart.dart';
 import 'package:e_store/pages/orders/orders.dart';
 import 'package:e_store/pages/products/product.dart';
@@ -15,6 +16,15 @@ class Landing extends StatefulWidget {
 
 class _LandingState extends State<Landing> {
   int _selectedIndex = 0;
+  List<Product> products = [];
+
+  void fetchProducts() async {
+    try {
+      
+    } catch (e) {
+      
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -217,7 +227,8 @@ class _LandingState extends State<Landing> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const Product()),
+                                        builder: (context) =>
+                                            const MyProduct()),
                                   );
                                 },
                                 child: Container(

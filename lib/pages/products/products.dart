@@ -106,7 +106,7 @@ class _ProductsState extends State<Products> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const Product()),
+                                              const MyProduct()),
                                     );
                                   },
                                   child: Container(
