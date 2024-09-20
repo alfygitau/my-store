@@ -21,9 +21,9 @@ class _LandingState extends State<Landing> {
   List<Product> products = [];
   List<ProductCategory> categories = [];
   final List<String> imageList = [
-    'assets/images/seeds.jpeg',
-    'assets/images/fertilizer.jpeg',
-    'assets/images/anticides.jpeg',
+    'assets/images/new_seeds.webp',
+    'assets/images/hero.jpg',
+    'assets/images/fungi.jpg',
   ];
 
   void fetchProducts() async {
