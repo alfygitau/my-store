@@ -1,14 +1,39 @@
+import 'package:e_store/models/CategoryProducts.dart';
+import 'package:e_store/models/Product.dart';
 import 'package:e_store/pages/products/product.dart';
+import 'package:e_store/services/product_service.dart';
 import 'package:flutter/material.dart';
 
 class Products extends StatefulWidget {
-  const Products({super.key});
+  final int? categoryId;
+  final String category;
+  const Products({super.key, required this.categoryId, required this.category});
 
   @override
   State<Products> createState() => _ProductsState();
 }
 
 class _ProductsState extends State<Products> {
+  List<CategoryProduct> products = [];
+
+  void fetchCategoryProducts() async {
+    try {
+      final result = await ProductService()
+          .fetchProductsByCategory(widget.categoryId.toString());
+      setState(() {
+        products = result;
+      });
+    } catch (e) {
+      ProductService().showToast(e.toString(), isError: true);
+    }
+  }
+
+  @override
+  void initState() {
+    fetchCategoryProducts();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,9 +45,9 @@ class _ProductsState extends State<Products> {
               Navigator.pop(context);
             },
           ),
-          title: const Text(
-            "Fertilizers",
-            style: TextStyle(
+          title: Text(
+            widget.category,
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 15,
               fontWeight: FontWeight.bold,
@@ -53,9 +78,9 @@ class _ProductsState extends State<Products> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        '10 products',
-                        style: TextStyle(
+                      Text(
+                        '${products.length} products',
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                             fontWeight: FontWeight.normal),
@@ -94,7 +119,7 @@ class _ProductsState extends State<Products> {
                   height: 600,
                   child: ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: 5,
+                      itemCount: products.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -105,14 +130,14 @@ class _ProductsState extends State<Products> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const MyProduct()),
+                                          builder: (context) => MyProduct(
+                                              id: products[index].productId)),
                                     );
                                   },
                                   child: Container(
                                     height: 130,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 7),
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 10),
                                     width: double.infinity,
@@ -132,8 +157,10 @@ class _ProductsState extends State<Products> {
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(5),
-                                            child: Image.asset(
-                                              'assets/images/seed-category.jpeg',
+                                            child: Image.network(
+                                              products[index]
+                                                  .images[0]
+                                                  .imageUrl,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
@@ -146,11 +173,11 @@ class _ProductsState extends State<Products> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            const Align(
+                                            Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                'Hybrid seeds',
-                                                style: TextStyle(
+                                                products[index].title,
+                                                style: const TextStyle(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w500,
                                                     color: Colors.black),
@@ -160,14 +187,17 @@ class _ProductsState extends State<Products> {
                                             const SizedBox(
                                               height: 10,
                                             ),
-                                            const Text(
-                                              'A premium maize seeds to optimize your yields',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w300,
-                                                color: Colors.grey,
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                products[index].description,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w300,
+                                                  color: Colors.grey,
+                                                ),
+                                                textAlign: TextAlign.left,
                                               ),
-                                              textAlign: TextAlign.left,
                                             ),
                                             const SizedBox(
                                               height: 10,
@@ -177,9 +207,9 @@ class _ProductsState extends State<Products> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                const Text(
-                                                  "KES 1200.00",
-                                                  style: TextStyle(
+                                                Text(
+                                                  "KES ${products[index].price}.00",
+                                                  style: const TextStyle(
                                                       fontSize: 13,
                                                       fontWeight:
                                                           FontWeight.bold),

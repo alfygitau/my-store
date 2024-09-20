@@ -1,13 +1,34 @@
+import 'package:e_store/models/SingleProduct.dart';
+import 'package:e_store/services/product_service.dart';
 import 'package:flutter/material.dart';
 
 class MyProduct extends StatefulWidget {
-  const MyProduct({super.key});
+  final int? id;
+  const MyProduct({super.key, required this.id});
 
   @override
   State<MyProduct> createState() => _MyProductState();
 }
 
 class _MyProductState extends State<MyProduct> {
+  SigleProduct? product;
+  void fetchProduct() async {
+    try {
+      final result = await ProductService().fetchProduct(widget.id.toString());
+      setState(() {
+        product = result;
+      });
+    } catch (e) {
+      ProductService().showToast(e.toString(), isError: true);
+    }
+  }
+
+  @override
+  void initState() {
+    fetchProduct();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,9 +40,9 @@ class _MyProductState extends State<MyProduct> {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
-          "Hybrid d57 seeds",
-          style: TextStyle(
+        title: Text(
+          product!.title,
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -48,7 +69,7 @@ class _MyProductState extends State<MyProduct> {
                 height: 250,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 10,
+                  itemCount: product!.images.length,
                   itemBuilder: (context, index) {
                     return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -70,8 +91,8 @@ class _MyProductState extends State<MyProduct> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
-                                child: Image.asset(
-                                  "assets/images/seeds.jpeg",
+                                child: Image.network(
+                                  product!.images[index].imageUrl,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -92,21 +113,21 @@ class _MyProductState extends State<MyProduct> {
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5))),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Hybrid d57 All Soil Premium Seeds',
-                        style: TextStyle(
+                        product!.title,
+                        style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w500),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
-                    Align(
+                    const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Company: Kenya seeds',
@@ -119,8 +140,8 @@ class _MyProductState extends State<MyProduct> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'KSH 1800.00',
-                        style: TextStyle(
+                        'KSH ${product!.price}.00',
+                        style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: Colors.blue),
@@ -129,8 +150,8 @@ class _MyProductState extends State<MyProduct> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Units available in stock : 30 units',
-                        style: TextStyle(
+                        'Units available in stock : ${product!.stockBalance} units',
+                        style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             color: Colors.black),
@@ -151,7 +172,7 @@ class _MyProductState extends State<MyProduct> {
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Align(
                         alignment: Alignment.centerLeft,
@@ -166,11 +187,11 @@ class _MyProductState extends State<MyProduct> {
                       Divider(
                         color: Colors.grey[300],
                       ),
-                      const Align(
+                      Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'In agriculture and gardening, hybrid seed is produced by deliberately cross-pollinated plants which are genetically diverse. Hybrid seed is common in industrial agriculture and home gardening.',
-                          style: TextStyle(
+                          product!.description,
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 13,
                               fontWeight: FontWeight.w400),

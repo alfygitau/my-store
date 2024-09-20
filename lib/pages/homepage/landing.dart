@@ -1,8 +1,10 @@
 import 'package:e_store/models/Product.dart';
+import 'package:e_store/models/ProductCategory.dart';
 import 'package:e_store/pages/cart/cart.dart';
 import 'package:e_store/pages/orders/orders.dart';
 import 'package:e_store/pages/products/product.dart';
 import 'package:e_store/pages/products/products.dart';
+import 'package:e_store/services/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -17,12 +19,32 @@ class Landing extends StatefulWidget {
 class _LandingState extends State<Landing> {
   int _selectedIndex = 0;
   List<Product> products = [];
+  List<ProductCategory> categories = [];
+  final List<String> imageList = [
+    'assets/images/seeds.jpeg',
+    'assets/images/fertilizer.jpeg',
+    'assets/images/anticides.jpeg',
+  ];
 
   void fetchProducts() async {
     try {
-      
+      final result = await ProductService().fetchProducts();
+      setState(() {
+        products = result;
+      });
     } catch (e) {
-      
+      ProductService().showToast(e.toString(), isError: true);
+    }
+  }
+
+  void fetchCategories() async {
+    try {
+      final result = await ProductService().fetchCategories();
+      setState(() {
+        categories = result;
+      });
+    } catch (e) {
+      ProductService().showToast(e.toString(), isError: true);
     }
   }
 
@@ -53,11 +75,13 @@ class _LandingState extends State<Landing> {
     }
   }
 
-  final List<String> imageList = [
-    'assets/images/seeds.jpeg',
-    'assets/images/fertilizer.jpeg',
-    'assets/images/anticides.jpeg',
-  ];
+  @override
+  void initState() {
+    fetchProducts();
+    fetchCategories();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,49 +171,52 @@ class _LandingState extends State<Landing> {
                 height: 10,
               ),
               Container(
-                height: 100,
+                height: 60,
                 width: double.infinity,
                 color: Colors.white,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 6,
+                  itemCount: categories.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Products()),
-                            );
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 50,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Products(
+                                      categoryId: categories[index].categoryId,
+                                      category: categories[index].name),
                                 ),
-                                child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/images/seed-category.jpeg',
-                                    fit: BoxFit.cover,
+                              );
+                            },
+                            child: Container(
+                              height: 35,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                      color: const Color(0xFF12B981), width: 1),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(5))),
+                              child: Center(
+                                child: Text(
+                                  categories[index].name,
+                                  style: const TextStyle(
+                                    fontSize: 12,
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                "Seeds",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ));
+                        ],
+                      ),
+                    );
                   },
                 ),
               ),
@@ -216,7 +243,7 @@ class _LandingState extends State<Landing> {
                 height: 600,
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: 5,
+                    itemCount: products.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -227,8 +254,8 @@ class _LandingState extends State<Landing> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MyProduct()),
+                                        builder: (context) => MyProduct(
+                                            id: products[index].productId)),
                                   );
                                 },
                                 child: Container(
@@ -254,8 +281,8 @@ class _LandingState extends State<Landing> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(5),
-                                          child: Image.asset(
-                                            'assets/images/seed-category.jpeg',
+                                          child: Image.network(
+                                            products[index].images[0].imageUrl,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -268,11 +295,11 @@ class _LandingState extends State<Landing> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          const Align(
+                                          Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              'Hybrid seeds',
-                                              style: TextStyle(
+                                              products[index].title,
+                                              style: const TextStyle(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.w500,
                                                   color: Colors.black),
@@ -282,14 +309,17 @@ class _LandingState extends State<Landing> {
                                           const SizedBox(
                                             height: 10,
                                           ),
-                                          const Text(
-                                            'A premium maize seeds to optimize your yields',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.grey,
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              products[index].description,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.grey,
+                                              ),
+                                              textAlign: TextAlign.left,
                                             ),
-                                            textAlign: TextAlign.left,
                                           ),
                                           const SizedBox(
                                             height: 10,
@@ -298,9 +328,9 @@ class _LandingState extends State<Landing> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              const Text(
-                                                "KES 1200.00",
-                                                style: TextStyle(
+                                              Text(
+                                                "KES ${products[index].price}",
+                                                style: const TextStyle(
                                                     fontSize: 13,
                                                     fontWeight:
                                                         FontWeight.bold),
