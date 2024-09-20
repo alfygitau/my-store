@@ -1,5 +1,4 @@
 import 'package:e_store/models/CategoryProducts.dart';
-import 'package:e_store/models/Product.dart';
 import 'package:e_store/pages/products/product.dart';
 import 'package:e_store/services/product_service.dart';
 import 'package:flutter/material.dart';
