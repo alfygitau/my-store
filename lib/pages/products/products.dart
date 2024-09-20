@@ -48,6 +48,7 @@ class _ProductsState extends State<Products> {
                 Container(
                   height: 70,
                   width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: const BoxDecoration(color: Colors.white),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

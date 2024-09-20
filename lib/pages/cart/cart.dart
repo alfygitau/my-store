@@ -309,7 +309,7 @@ class _CartState extends State<Cart> {
                           child: Text(
                             "Checkout",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
