@@ -5,9 +5,11 @@ import 'package:e_store/pages/orders/orders.dart';
 import 'package:e_store/pages/products/product.dart';
 import 'package:e_store/pages/products/products.dart';
 import 'package:e_store/services/product_service.dart';
+import 'package:e_store/state/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
 class Landing extends StatefulWidget {
   const Landing({super.key});
@@ -17,6 +19,7 @@ class Landing extends StatefulWidget {
 }
 
 class _LandingState extends State<Landing> {
+  int productQuantity = 0;
   int _selectedIndex = 0;
   List<Product> products = [];
   List<ProductCategory> categories = [];
@@ -84,6 +87,8 @@ class _LandingState extends State<Landing> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+    int cartItemCount = cartProvider.cart.products.length;
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -337,45 +342,75 @@ class _LandingState extends State<Landing> {
                                               ),
                                               Row(
                                                 children: [
-                                                  Container(
-                                                    height: 30,
-                                                    width: 30,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color: Colors.grey),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    5))),
-                                                    child: const Center(
-                                                      child: Icon(Icons.remove),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        if (productQuantity >
+                                                            0) {
+                                                          productQuantity--;
+                                                        }
+                                                      });
+                                                      cartProvider
+                                                          .decreaseQuantity(
+                                                              products[index]
+                                                                  .productId
+                                                                  .toString());
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.grey),
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          5))),
+                                                      child: const Center(
+                                                        child:
+                                                            Icon(Icons.remove),
+                                                      ),
                                                     ),
                                                   ),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  const Text('0'),
+                                                  Text(productQuantity
+                                                      .toString()),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Container(
-                                                    height: 30,
-                                                    width: 30,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                            color: Color(
-                                                                0xFF12B981),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            5))),
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        productQuantity++;
+                                                      });
+                                                      cartProvider
+                                                          .addOrIncreaseQuantity(
+                                                              products[index],
+                                                              products[index]
+                                                                  .productId
+                                                                  .toString());
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: const BoxDecoration(
+                                                          color:
+                                                              Color(0xFF12B981),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          5))),
+                                                      child: const Center(
+                                                        child: Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -398,20 +433,48 @@ class _LandingState extends State<Landing> {
         )),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
+            icon: Stack(
+              children: <Widget>[
+                const Icon(Icons.shopping_bag),
+                if (cartItemCount > 0)
+                  Positioned(
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        '$cartItemCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             label: 'Cart',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
             label: 'Orders',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             label: 'Profile',
           ),

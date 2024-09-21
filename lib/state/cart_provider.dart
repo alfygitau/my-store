@@ -29,26 +29,30 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void increaseQuantity(String productId) {
+  void addOrIncreaseQuantity(Product product, String productId) {
     final existingItemIndex = _cart.products
         .indexWhere((item) => item.product.productId.toString() == productId);
+
     if (existingItemIndex >= 0) {
       _cart.products[existingItemIndex].quantity++;
-      notifyListeners();
+    } else {
+      _cart.products.add(CartItem(product: product, quantity: 1));
     }
+    notifyListeners();
   }
 
   void decreaseQuantity(String productId) {
     final existingItemIndex = _cart.products
         .indexWhere((item) => item.product.productId.toString() == productId);
     if (existingItemIndex >= 0) {
-      if (_cart.products[existingItemIndex].quantity > 1) {
+      int currentQuantity = _cart.products[existingItemIndex].quantity;
+      if (currentQuantity > 1) {
         _cart.products[existingItemIndex].quantity--;
-      } else {
-        _cart.products
-            .removeAt(existingItemIndex);
+      } else if (currentQuantity == 1) {
+        _cart.products.removeAt(existingItemIndex);
       }
-      notifyListeners();
-    }
+    } 
+
+    notifyListeners();
   }
 }

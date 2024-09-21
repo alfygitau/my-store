@@ -1,5 +1,7 @@
 import 'package:e_store/pages/checkout/checkout.dart';
+import 'package:e_store/state/cart_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -11,6 +13,9 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+    final cartItems = cartProvider.cart.products;
+    final cart = cartProvider.cart;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -20,9 +25,9 @@ class _CartState extends State<Cart> {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
-          "My cart (3)",
-          style: TextStyle(
+        title: Text(
+          "My cart (${cartItems.length})",
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -63,7 +68,7 @@ class _CartState extends State<Cart> {
                   height: 380,
                   child: ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: 3,
+                      itemCount: cartItems.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
@@ -88,8 +93,11 @@ class _CartState extends State<Cart> {
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(5),
-                                      child: Image.asset(
-                                        'assets/images/seed-category.jpeg',
+                                      child: Image.network(
+                                        cartItems[index]
+                                            .product
+                                            .images[0]
+                                            .imageUrl,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -97,34 +105,37 @@ class _CartState extends State<Cart> {
                                   const SizedBox(
                                     width: 10,
                                   ),
-                                  const Expanded(
+                                  Expanded(
                                       child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          'Hybrid seeds',
-                                          style: TextStyle(
+                                          cartItems[index].product.title,
+                                          style: const TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black),
                                           textAlign: TextAlign.left,
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
-                                      Text(
-                                        'A premium maize seeds to optimize your yields',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.grey,
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          cartItems[index].product.description,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.grey,
+                                          ),
+                                          textAlign: TextAlign.left,
                                         ),
-                                        textAlign: TextAlign.left,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       Row(
@@ -132,14 +143,14 @@ class _CartState extends State<Cart> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "KES 1200.00",
-                                            style: TextStyle(
+                                            "KES ${cartItems[index].product.price}.00",
+                                            style: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
-                                            'Quantity: 1',
-                                            style: TextStyle(
+                                            'Quantity: ${cartItems[index].quantity}',
+                                            style: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w300),
                                           )
@@ -187,10 +198,10 @@ class _CartState extends State<Cart> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Align(
+                          const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               "Price(3 products)",
@@ -203,8 +214,8 @@ class _CartState extends State<Cart> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "KES 1600.00",
-                              style: TextStyle(
+                              "KES ${cart.totalPrice.toStringAsFixed(2)}",
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold),
@@ -222,10 +233,10 @@ class _CartState extends State<Cart> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Align(
+                          const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               "Total amount",
@@ -238,8 +249,8 @@ class _CartState extends State<Cart> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "KES 1600.00",
-                              style: TextStyle(
+                              "KES ${cart.totalPrice.toStringAsFixed(2)}",
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold),
@@ -281,9 +292,9 @@ class _CartState extends State<Cart> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'KES 480.00',
-                        style: TextStyle(
+                      Text(
+                        "KES ${cart.totalPrice.toStringAsFixed(2)}",
+                        style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black),
