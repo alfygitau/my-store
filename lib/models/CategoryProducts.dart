@@ -3,7 +3,7 @@ class CategoryProduct {
   final String title;
   final List<CategoryProductImage> images;
   final int discount;
-  final Merchant merchant;
+  final CategoryProductsMerchant merchant;
   final int quantity;
   final int categoryId;
   final String createdAt;
@@ -39,7 +39,7 @@ class CategoryProduct {
           .map((imageJson) => CategoryProductImage.fromJson(imageJson))
           .toList(),
       discount: json['discount'] as int,
-      merchant: Merchant.fromJson(json['merchant']),
+      merchant: CategoryProductsMerchant.fromJson(json['merchant']),
       quantity: json['quantity'] as int,
       categoryId: json['categoryId'] as int,
       createdAt: json['created_at'] as String,
@@ -53,7 +53,7 @@ class CategoryProduct {
   }
 }
 
-class Merchant {
+class CategoryProductsMerchant {
   final int merchantId;
   final String businessName;
   final String merchantType;
@@ -62,7 +62,7 @@ class Merchant {
   final String createdAt;
   final String updatedAt;
 
-  Merchant({
+  CategoryProductsMerchant({
     required this.merchantId,
     required this.businessName,
     required this.merchantType,
@@ -72,8 +72,8 @@ class Merchant {
     required this.updatedAt,
   });
 
-  factory Merchant.fromJson(Map<String, dynamic> json) {
-    return Merchant(
+  factory CategoryProductsMerchant.fromJson(Map<String, dynamic> json) {
+    return CategoryProductsMerchant(
       merchantId: json['merchant_id'] as int,
       businessName: json['business_name'] as String,
       merchantType: json['merchant_type'] as String,

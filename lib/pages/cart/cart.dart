@@ -52,15 +52,27 @@ class _CartState extends State<Cart> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Products',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Products',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    GestureDetector(
+                      onTap: cartProvider.clearCart,
+                      child: const Text(
+                        "Clear cart",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 11),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 10,
@@ -75,7 +87,7 @@ class _CartState extends State<Cart> {
                               return Column(
                                 children: [
                                   Container(
-                                    height: 115,
+                                    height: 185,
                                     margin:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     padding: const EdgeInsets.symmetric(
@@ -112,7 +124,7 @@ class _CartState extends State<Cart> {
                                         Expanded(
                                             child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.spaceAround,
                                           children: [
                                             Align(
                                               alignment: Alignment.centerLeft,
@@ -140,6 +152,7 @@ class _CartState extends State<Cart> {
                                                   color: Colors.grey,
                                                 ),
                                                 textAlign: TextAlign.left,
+                                                maxLines: 3,
                                               ),
                                             ),
                                             const SizedBox(
@@ -163,6 +176,101 @@ class _CartState extends State<Cart> {
                                                       fontSize: 13,
                                                       fontWeight:
                                                           FontWeight.w300),
+                                                )
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    cartProvider.removeProduct(
+                                                        cartItems[index]
+                                                            .product
+                                                            .productId
+                                                            .toString());
+                                                  },
+                                                  child: const Text(
+                                                    'Remove',
+                                                    style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontWeight:
+                                                            FontWeight.w300,
+                                                        fontSize: 12),
+                                                  ),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        cartProvider
+                                                            .decreaseQuantity(
+                                                                cartItems[index]
+                                                                    .product
+                                                                    .productId
+                                                                    .toString());
+                                                      },
+                                                      child: Container(
+                                                        height: 30,
+                                                        width: 30,
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                width: 1,
+                                                                color: Colors
+                                                                    .grey),
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            5))),
+                                                        child: const Center(
+                                                          child: Icon(
+                                                              Icons.remove),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(cartItems[index]
+                                                        .quantity
+                                                        .toString()),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        cartProvider
+                                                            .addOrIncreaseQuantity(
+                                                                cartItems[index]
+                                                                    .product,
+                                                                cartItems[index]
+                                                                    .product
+                                                                    .productId
+                                                                    .toString());
+                                                      },
+                                                      child: Container(
+                                                        height: 30,
+                                                        width: 30,
+                                                        decoration: const BoxDecoration(
+                                                            color: Color(
+                                                                0xFF12B981),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            5))),
+                                                        child: const Center(
+                                                          child: Icon(
+                                                            Icons.add,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 )
                                               ],
                                             )
@@ -226,7 +334,7 @@ class _CartState extends State<Cart> {
                           ],
                         )),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 if (cartItems.isNotEmpty)
                   Container(
@@ -346,23 +454,6 @@ class _CartState extends State<Cart> {
                   height: 15,
                 ),
                 if (cartItems.isNotEmpty)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: cartProvider.clearCart,
-                      child: const Text(
-                        "Clear cart",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 11),
-                      ),
-                    ),
-                  ),
-                const SizedBox(
-                  height: 15,
-                ),
-                if (cartItems.isNotEmpty)
                   Container(
                     height: 100,
                     width: double.infinity,
@@ -371,12 +462,33 @@ class _CartState extends State<Cart> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "KES ${cart.totalPrice.toStringAsFixed(2)}",
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Landing()),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            side: const BorderSide(color: Color(0xFF12B981)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            minimumSize: const Size(0, 35),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Text(
+                              "Home",
+                              style: TextStyle(
+                                color: Color(0xFF12B981),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
                         OutlinedButton(
                           onPressed: () {
@@ -392,13 +504,14 @@ class _CartState extends State<Cart> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            minimumSize: const Size(60, 35),
+                            minimumSize: const Size(0, 35),
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 5.0),
                             child: Text(
-                              "Checkout",
-                              style: TextStyle(
+                              "Checkout (KES ${cart.totalPrice.toStringAsFixed(2)})",
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,

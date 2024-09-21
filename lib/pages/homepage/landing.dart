@@ -324,6 +324,7 @@ class _LandingState extends State<Landing> {
                                                 color: Colors.grey,
                                               ),
                                               textAlign: TextAlign.left,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           const SizedBox(

@@ -71,6 +71,7 @@ class ProductService {
         throw Exception('Failed to load products');
       }
     } catch (e) {
+      print(e.toString());
       throw Exception('Error fetching products: $e');
     }
   }

@@ -1,7 +1,10 @@
 import 'package:e_store/models/CategoryProducts.dart';
+import 'package:e_store/models/Product.dart';
 import 'package:e_store/pages/products/product.dart';
 import 'package:e_store/services/product_service.dart';
+import 'package:e_store/state/cart_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Products extends StatefulWidget {
   final int? categoryId;
@@ -14,6 +17,7 @@ class Products extends StatefulWidget {
 
 class _ProductsState extends State<Products> {
   List<CategoryProduct> products = [];
+  int productQuantity = 0;
 
   void fetchCategoryProducts() async {
     try {
@@ -27,6 +31,43 @@ class _ProductsState extends State<Products> {
     }
   }
 
+  Product convertToProduct(CategoryProduct categoryProduct) {
+    return Product(
+        productId: categoryProduct.productId,
+        title: categoryProduct.title,
+        description: categoryProduct.description,
+        price: categoryProduct.price,
+        discount: double.parse(categoryProduct.discount.toString()),
+        quantity: categoryProduct.quantity,
+        unitOfMeasurement: categoryProduct.unitOfMeasurement,
+        stockBalance: categoryProduct.stockBalance,
+        categoryId: categoryProduct.categoryId,
+        merchantId: categoryProduct.merchantId,
+        merchant: convertToProductMerchant(categoryProduct.merchant),
+        images: categoryProduct.images
+            .map((image) => convertToProductImage(image))
+            .toList(),
+        createdAt: DateTime.parse(categoryProduct.createdAt),
+        updatedAt: DateTime.parse(categoryProduct.updatedAt));
+  }
+
+  ProductImage convertToProductImage(CategoryProductImage categoryImage) {
+    return ProductImage(
+        productImageId: categoryImage.productImageId,
+        imageUrl: categoryImage.imageUrl);
+  }
+
+  Merchant convertToProductMerchant(CategoryProductsMerchant categoryMerchant) {
+    return Merchant(
+        merchantId: categoryMerchant.merchantId,
+        businessName: categoryMerchant.businessName,
+        merchantType: categoryMerchant.merchantType,
+        subscriptionStatus: categoryMerchant.subscriptionStatus,
+        subscriptionEndDate: categoryMerchant.subscriptionEndDate,
+        createdAt: DateTime.parse(categoryMerchant.createdAt),
+        updatedAt: DateTime.parse(categoryMerchant.updatedAt));
+  }
+
   @override
   void initState() {
     fetchCategoryProducts();
@@ -35,6 +76,7 @@ class _ProductsState extends State<Products> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -132,7 +174,7 @@ class _ProductsState extends State<Products> {
                                   );
                                 },
                                 child: Container(
-                                  height: 130,
+                                  height: 150,
                                   margin:
                                       const EdgeInsets.symmetric(vertical: 7),
                                   padding: const EdgeInsets.symmetric(
@@ -192,6 +234,7 @@ class _ProductsState extends State<Products> {
                                                 color: Colors.grey,
                                               ),
                                               textAlign: TextAlign.left,
+                                              maxLines: 3,
                                             ),
                                           ),
                                           const SizedBox(
@@ -210,45 +253,76 @@ class _ProductsState extends State<Products> {
                                               ),
                                               Row(
                                                 children: [
-                                                  Container(
-                                                    height: 30,
-                                                    width: 30,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color: Colors.grey),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    5))),
-                                                    child: const Center(
-                                                      child: Icon(Icons.remove),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      if (productQuantity > 0) {
+                                                        setState(() {
+                                                          productQuantity--;
+                                                        });
+                                                      }
+                                                      cartProvider
+                                                          .decreaseQuantity(
+                                                              products[index]
+                                                                  .productId
+                                                                  .toString());
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.grey),
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          5))),
+                                                      child: const Center(
+                                                        child:
+                                                            Icon(Icons.remove),
+                                                      ),
                                                     ),
                                                   ),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  const Text('0'),
+                                                  Text(productQuantity
+                                                      .toString()),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Container(
-                                                    height: 30,
-                                                    width: 30,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                            color: Color(
-                                                                0xFF12B981),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            5))),
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        productQuantity++;
+                                                      });
+                                                      cartProvider
+                                                          .addOrIncreaseQuantity(
+                                                              convertToProduct(
+                                                                  products[
+                                                                      index]),
+                                                              products[index]
+                                                                  .productId
+                                                                  .toString());
+                                                    },
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: const BoxDecoration(
+                                                          color:
+                                                              Color(0xFF12B981),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          5))),
+                                                      child: const Center(
+                                                        child: Icon(
+                                                          Icons.add,
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
