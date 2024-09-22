@@ -1,3 +1,5 @@
+import 'package:e_store/pages/auth/login.dart';
+import 'package:e_store/pages/auth/register.dart';
 import 'package:e_store/pages/orders/orders.dart';
 import 'package:flutter/material.dart';
 
@@ -359,7 +361,7 @@ class _CheckoutState extends State<Checkout> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const MyOrders()),
+                                    builder: (context) => const Login()),
                               );
                             },
                             style: OutlinedButton.styleFrom(
@@ -375,7 +377,7 @@ class _CheckoutState extends State<Checkout> {
                               child: Text(
                                 "Place order",
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),

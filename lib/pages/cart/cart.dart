@@ -62,16 +62,17 @@ class _CartState extends State<Cart> {
                           color: Colors.black,
                           fontWeight: FontWeight.w500),
                     ),
-                    GestureDetector(
-                      onTap: cartProvider.clearCart,
-                      child: const Text(
-                        "Clear cart",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 11),
+                    if (cartItems.isNotEmpty)
+                      GestureDetector(
+                        onTap: cartProvider.clearCart,
+                        child: const Text(
+                          "Clear cart",
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 11),
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 const SizedBox(

@@ -19,7 +19,7 @@ class Landing extends StatefulWidget {
 }
 
 class _LandingState extends State<Landing> {
-  int productQuantity = 0;
+  Map<String, int> productQuantities = {};
   int _selectedIndex = 0;
   List<Product> products = [];
   List<ProductCategory> categories = [];
@@ -34,6 +34,9 @@ class _LandingState extends State<Landing> {
       final result = await ProductService().fetchProducts();
       setState(() {
         products = result;
+        for (var product in products) {
+          productQuantities.putIfAbsent(product.productId.toString(), () => 0);
+        }
       });
     } catch (e) {
       ProductService().showToast(e.toString(), isError: true);
@@ -250,6 +253,7 @@ class _LandingState extends State<Landing> {
                     scrollDirection: Axis.vertical,
                     itemCount: products.length,
                     itemBuilder: (context, index) {
+                      String productId = products[index].productId.toString();
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
@@ -346,16 +350,21 @@ class _LandingState extends State<Landing> {
                                                   GestureDetector(
                                                     onTap: () {
                                                       setState(() {
-                                                        if (productQuantity >
+                                                        int currentQuantity =
+                                                            productQuantities[
+                                                                    productId] ??
+                                                                0;
+                                                        if (currentQuantity >
                                                             0) {
-                                                          productQuantity--;
+                                                          productQuantities[
+                                                                  productId] =
+                                                              currentQuantity -
+                                                                  1;
                                                         }
                                                       });
                                                       cartProvider
                                                           .decreaseQuantity(
-                                                              products[index]
-                                                                  .productId
-                                                                  .toString());
+                                                              productId);
                                                     },
                                                     child: Container(
                                                       height: 30,
@@ -379,22 +388,27 @@ class _LandingState extends State<Landing> {
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Text(productQuantity
-                                                      .toString()),
+                                                  Text(productQuantities[
+                                                              productId]
+                                                          ?.toString() ??
+                                                      "0"),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
                                                       setState(() {
-                                                        productQuantity++;
+                                                        productQuantities[
+                                                                productId] =
+                                                            (productQuantities[
+                                                                        productId] ??
+                                                                    0) +
+                                                                1;
                                                       });
                                                       cartProvider
                                                           .addOrIncreaseQuantity(
                                                               products[index],
-                                                              products[index]
-                                                                  .productId
-                                                                  .toString());
+                                                              productId);
                                                     },
                                                     child: Container(
                                                       height: 30,
