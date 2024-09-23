@@ -1,5 +1,8 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:e_store/models/Product.dart';
 import 'package:e_store/models/ProductCategory.dart';
+import 'package:e_store/pages/auth/account.dart';
 import 'package:e_store/pages/cart/cart.dart';
 import 'package:e_store/pages/orders/orders.dart';
 import 'package:e_store/pages/products/product.dart';
@@ -76,6 +79,12 @@ class _LandingState extends State<Landing> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const MyOrders()),
+        );
+        break;
+              case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AccountProfile()),
         );
         break;
     }

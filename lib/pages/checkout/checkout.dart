@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:e_store/pages/auth/login.dart';
 import 'package:e_store/pages/auth/register.dart';
 import 'package:e_store/pages/orders/orders.dart';
