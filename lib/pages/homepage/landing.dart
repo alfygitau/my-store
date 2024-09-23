@@ -349,19 +349,6 @@ class _LandingState extends State<Landing> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
-                                                      setState(() {
-                                                        int currentQuantity =
-                                                            productQuantities[
-                                                                    productId] ??
-                                                                0;
-                                                        if (currentQuantity >
-                                                            0) {
-                                                          productQuantities[
-                                                                  productId] =
-                                                              currentQuantity -
-                                                                  1;
-                                                        }
-                                                      });
                                                       cartProvider
                                                           .decreaseQuantity(
                                                               productId);
@@ -388,23 +375,13 @@ class _LandingState extends State<Landing> {
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Text(productQuantities[
-                                                              productId]
-                                                          ?.toString() ??
-                                                      "0"),
+                                                  Text(
+                                                      '${cartProvider.getQuantity(products[index].productId.toString())}'),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      setState(() {
-                                                        productQuantities[
-                                                                productId] =
-                                                            (productQuantities[
-                                                                        productId] ??
-                                                                    0) +
-                                                                1;
-                                                      });
                                                       cartProvider
                                                           .addOrIncreaseQuantity(
                                                               products[index],
