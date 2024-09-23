@@ -7,6 +7,11 @@ class CartProvider with ChangeNotifier {
 
   Cart get cart => _cart;
 
+  bool isInCart(Product product) {
+    return _cart.products
+        .any((item) => item.product.productId == product.productId);
+  }
+
   void addProduct(Product product, [int quantity = 1]) {
     final existingItemIndex = _cart.products
         .indexWhere((item) => item.product.productId == product.productId);
@@ -51,8 +56,17 @@ class CartProvider with ChangeNotifier {
       } else if (currentQuantity == 1) {
         _cart.products.removeAt(existingItemIndex);
       }
-    } 
+    }
 
     notifyListeners();
+  }
+
+  int getQuantity(String productId) {
+    final existingItemIndex = _cart.products
+        .indexWhere((item) => item.product.productId.toString() == productId);
+    if (existingItemIndex >= 0) {
+      return _cart.products[existingItemIndex].quantity;
+    }
+    return 0;
   }
 }

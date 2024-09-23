@@ -1,6 +1,9 @@
+import 'package:e_store/models/Product.dart';
 import 'package:e_store/services/product_service.dart';
+import 'package:e_store/state/cart_provider.dart';
 import 'package:flutter/material.dart';
 import "package:e_store/models/SingleProduct.dart";
+import 'package:provider/provider.dart';
 
 class MyProduct extends StatefulWidget {
   final int? id;
@@ -23,6 +26,44 @@ class _MyProductState extends State<MyProduct> {
     }
   }
 
+  Product convertToProduct(SigleProduct singleProduct) {
+    return Product(
+        productId: singleProduct.productId,
+        title: singleProduct.title,
+        description: singleProduct.description,
+        price: singleProduct.price.toDouble(),
+        discount: singleProduct.discount.toDouble(),
+        quantity: singleProduct.quantity,
+        unitOfMeasurement: singleProduct.unitOfMeasurement,
+        stockBalance: singleProduct.stockBalance,
+        categoryId: singleProduct.categoryId,
+        merchantId: singleProduct.merchantId,
+        merchant: convertToProductMerchant(singleProduct.merchant),
+        images: singleProduct.images
+            .map((image) => convertToProductImage(image))
+            .toList(),
+        createdAt: DateTime.parse(singleProduct.createdAt),
+        updatedAt: DateTime.parse(singleProduct.updatedAt));
+  }
+
+  ProductImage convertToProductImage(SingleProductImage singleProductImage) {
+    return ProductImage(
+        productImageId: singleProductImage.productImageId,
+        imageUrl: singleProductImage.imageUrl);
+  }
+
+  Merchant convertToProductMerchant(
+      SigleProductMerchant singleProductMerchant) {
+    return Merchant(
+        merchantId: singleProductMerchant.merchantId,
+        businessName: singleProductMerchant.businessName,
+        merchantType: singleProductMerchant.merchantType,
+        subscriptionStatus: singleProductMerchant.subscriptionStatus,
+        subscriptionEndDate: singleProductMerchant.subscriptionEndDate,
+        createdAt: DateTime.parse(singleProductMerchant.createdAt),
+        updatedAt: DateTime.parse(singleProductMerchant.updatedAt));
+  }
+
   @override
   void initState() {
     fetchProduct();
@@ -31,6 +72,7 @@ class _MyProductState extends State<MyProduct> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -41,7 +83,7 @@ class _MyProductState extends State<MyProduct> {
           },
         ),
         title: Text(
-          product?.title ?? 'Loading...', // Null check added
+          product?.title ?? 'Loading...',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 15,
@@ -241,25 +283,90 @@ class _MyProductState extends State<MyProduct> {
                                 ),
                               ),
                             ),
-                            ElevatedButton.icon(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF12B981),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                              ),
-                              icon: const Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
-                              ),
-                              label: const Text(
-                                'Add to Cart',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+                            cartProvider.isInCart(convertToProduct(product!))
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: const Color(0xFF12B981)),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: Center(
+                                            child: IconButton(
+                                              icon: const Icon(
+                                                Icons.remove,
+                                                color: Color(0xFF12B981),
+                                              ),
+                                              onPressed: () {
+                                                cartProvider.decreaseQuantity(
+                                                    product?.productId
+                                                            .toString() ??
+                                                        "");
+                                              },
+                                            ),
+                                          )),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                          '${cartProvider.getQuantity(product!.productId.toString())}'),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF12B981),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              cartProvider
+                                                  .addOrIncreaseQuantity(
+                                                      convertToProduct(
+                                                          product!),
+                                                      product!.productId
+                                                          .toString());
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : ElevatedButton.icon(
+                                    onPressed: () {
+                                      cartProvider.addProduct(
+                                          convertToProduct(product!));
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF12B981),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                    icon: const Icon(
+                                      Icons.shopping_cart,
+                                      color: Colors.white,
+                                    ),
+                                    label: const Text(
+                                      'Add to Cart',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
                           ]),
                     )
                   ]),

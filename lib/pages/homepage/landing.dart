@@ -442,7 +442,10 @@ class _LandingState extends State<Landing> {
                         ),
                       );
                     }),
-              )
+              ),
+              const SizedBox(
+                height: 60,
+              ),
             ],
           ),
         )),
