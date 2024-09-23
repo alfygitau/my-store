@@ -119,9 +119,6 @@ class _LandingState extends State<Landing> {
       backgroundColor: const Color(0xFFF3F6F9),
       body: SafeArea(
         child: SingleChildScrollView(
-            child: Container(
-          color: const Color(0xFFF3F6F9),
-          width: double.infinity,
           child: Column(
             children: [
               const SizedBox(
@@ -270,7 +267,7 @@ class _LandingState extends State<Landing> {
                                 child: Container(
                                   height: 130,
                                   margin:
-                                      const EdgeInsets.symmetric(vertical: 10),
+                                      const EdgeInsets.symmetric(vertical: 5),
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 10),
                                   width: double.infinity,
@@ -421,11 +418,11 @@ class _LandingState extends State<Landing> {
                     }),
               ),
               const SizedBox(
-                height: 60,
+                height: 100,
               ),
             ],
           ),
-        )),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[

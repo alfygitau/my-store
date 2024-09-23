@@ -255,11 +255,6 @@ class _ProductsState extends State<Products> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
-                                                      if (productQuantity > 0) {
-                                                        setState(() {
-                                                          productQuantity--;
-                                                        });
-                                                      }
                                                       cartProvider
                                                           .decreaseQuantity(
                                                               products[index]
@@ -288,16 +283,13 @@ class _ProductsState extends State<Products> {
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Text(productQuantity
-                                                      .toString()),
+                                                  Text(
+                                                      '${cartProvider.getQuantity(products[index].productId.toString())}'),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      setState(() {
-                                                        productQuantity++;
-                                                      });
                                                       cartProvider
                                                           .addOrIncreaseQuantity(
                                                               convertToProduct(
