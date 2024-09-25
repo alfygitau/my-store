@@ -1,6 +1,6 @@
 name: e_store
 description: "An e-commerce project."
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -18,6 +18,8 @@ dev_dependencies:
     sdk: flutter
   flutter_svg: ^2.0.0
   carousel_slider: ^5.0.0
+  shared_preferences: ^2.0.13
+  image_picker: ^0.8.5+3
 
   flutter_lints: ^4.0.0
 flutter:
