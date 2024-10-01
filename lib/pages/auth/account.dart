@@ -1,5 +1,3 @@
-// ignore_for_file: unused_field, depend_on_referenced_packages, avoid_print
-
 import 'package:e_store/pages/orders/orders.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
