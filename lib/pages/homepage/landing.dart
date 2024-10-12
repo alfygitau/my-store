@@ -1,14 +1,14 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:e_store/models/Product.dart';
 import 'package:e_store/models/ProductCategory.dart';
 import 'package:e_store/pages/auth/account.dart';
+import 'package:e_store/pages/auth/login.dart';
 import 'package:e_store/pages/cart/cart.dart';
 import 'package:e_store/pages/orders/orders.dart';
 import 'package:e_store/pages/products/product.dart';
 import 'package:e_store/pages/products/products.dart';
 import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
+import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -61,7 +61,7 @@ class _LandingState extends State<Landing> {
     setState(() {
       _selectedIndex = index;
     });
-
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     switch (index) {
       case 0:
         Navigator.push(
@@ -82,10 +82,18 @@ class _LandingState extends State<Landing> {
         );
         break;
       case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AccountProfile()),
-        );
+        if (userProvider.isAuthenticated()) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AccountProfile()),
+          );
+        } else {
+          userProvider.setLastRoute('/account-profile');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Login()),
+          );
+        }
         break;
     }
   }

@@ -1,3 +1,6 @@
+import 'package:e_store/pages/auth/login.dart';
+import 'package:e_store/services/product_service.dart';
+import 'package:e_store/services/user_service.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -13,6 +16,38 @@ class _RegisterState extends State<Register> {
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  void _registerUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final userService = UserService();
+    final success = await userService.createUser(
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      email: _emailController.text,
+      msisdn: _mobileController.text,
+      username: _mobileController.text,
+      passwordHash: _passwordController.text,
+    );
+    if (success) {
+      setState(() {
+        _isLoading = false;
+      });
+      ProductService().showToast('User created successfully!');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      ProductService().showToast('Failed to create user.', isError: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +124,7 @@ class _RegisterState extends State<Register> {
               height: 60,
             ),
             OutlinedButton(
-              onPressed: () {},
+              onPressed: _isLoading ? null : _registerUser,
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 side: const BorderSide(color: Color(0xFF12B981)),

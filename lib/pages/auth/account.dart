@@ -1,5 +1,9 @@
+import 'package:e_store/pages/auth/address.dart';
+import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/pages/orders/orders.dart';
+import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -174,9 +178,7 @@ class _AccountProfileState extends State<AccountProfile> {
     );
 
     if (newPassword != null && newPassword.isNotEmpty) {
-      // Handle the update in the database
-      print(
-          'Password updated to: $newPassword');
+      print('Password updated to: $newPassword');
     }
   }
 
@@ -195,10 +197,16 @@ class _AccountProfileState extends State<AccountProfile> {
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const MyOrders()),
+          MaterialPageRoute(builder: (context) => const MyAddress()),
         );
         break;
       case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyOrders()),
+        );
+        break;
+      case 4:
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const SettingsPage()),
@@ -207,8 +215,19 @@ class _AccountProfileState extends State<AccountProfile> {
     }
   }
 
+  void _logout() {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.clearUserAndToken();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Landing()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.user;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -222,10 +241,18 @@ class _AccountProfileState extends State<AccountProfile> {
           "Account Profile",
           style: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            onPressed: () {
+              _logout();
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -234,14 +261,14 @@ class _AccountProfileState extends State<AccountProfile> {
             GestureDetector(
               onTap: _pickImage,
               child: CircleAvatar(
-                radius: 80,
+                radius: 50,
                 backgroundColor: const Color(0xFFE0E0E0),
                 backgroundImage: _profilePicFile != null
                     ? FileImage(_profilePicFile!)
                     : null,
                 child: _profilePicFile == null
                     ? const Icon(Icons.person,
-                        size: 80, color: Color(0xFFB0BEC5))
+                        size: 50, color: Color(0xFFB0BEC5))
                     : null,
               ),
             ),
@@ -252,9 +279,9 @@ class _AccountProfileState extends State<AccountProfile> {
               child: ListTile(
                 leading: const Icon(Icons.email, color: Color(0xFF12B981)),
                 title: Text(
-                  'Email: $_email',
+                  '${user?.email}',
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                      fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 tileColor: const Color(0xFFE0F2F1),
                 contentPadding:
@@ -275,15 +302,21 @@ class _AccountProfileState extends State<AccountProfile> {
             ),
             const SizedBox(height: 20),
             _buildProfileOption(
+              icon: Icons.location_on_sharp,
+              title: 'Add address',
+              onTap: () => _onItemTapped(2),
+            ),
+            const SizedBox(height: 20),
+            _buildProfileOption(
               icon: Icons.list,
               title: 'My Orders',
-              onTap: () => _onItemTapped(2),
+              onTap: () => _onItemTapped(3),
             ),
             const SizedBox(height: 20),
             _buildProfileOption(
               icon: Icons.settings,
               title: 'Settings',
-              onTap: () => _onItemTapped(3),
+              onTap: () => _onItemTapped(4),
             ),
           ],
         ),
@@ -313,7 +346,10 @@ class _AccountProfileState extends State<AccountProfile> {
         ),
         child: ListTile(
           leading: Icon(icon, color: const Color(0xFF12B981)),
-          title: Text(title),
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 13),
+          ),
           trailing:
               const Icon(Icons.arrow_forward_ios, color: Color(0xFF12B981)),
           contentPadding:

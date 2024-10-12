@@ -1,4 +1,9 @@
+import 'package:e_store/pages/auth/account.dart';
+import 'package:e_store/pages/auth/register.dart';
+import 'package:e_store/services/user_service.dart';
+import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -9,8 +14,46 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final TextEditingController _mobileController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+  final UserService _userService = UserService();
+
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final username = _mobileController.text;
+    final password = _passwordController.text;
+    final result = await _userService.login(username, password);
+
+    if (result != null) {
+      final token = result['token'];
+      final user = result['user'];
+      Provider.of<UserProvider>(context, listen: false)
+          .setUserAndToken(user, token);
+      final lastRoute =
+          Provider.of<UserProvider>(context, listen: false).getLastRoute();
+
+      if (lastRoute != null) {
+        Navigator.pushReplacementNamed(context, lastRoute);
+        Provider.of<UserProvider>(context, listen: false).clearLastRoute();
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AccountProfile()),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login failed. Please try again.')),
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,17 +87,6 @@ class _LoginState extends State<Login> {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: _buildInputLabel('Enter email'),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            _buildInputField("Enter your email", _emailController),
-            const SizedBox(
-              height: 20,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
               child: _buildInputLabel('Enter password'),
             ),
             const SizedBox(
@@ -62,10 +94,31 @@ class _LoginState extends State<Login> {
             ),
             _buildInputField("Enter your password", _passwordController),
             const SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Register()),
+                );
+              },
+              child: const Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'Dont have an account ? Register here',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+            ),
+            const SizedBox(
               height: 60,
             ),
             OutlinedButton(
-              onPressed: () {},
+              onPressed: _isLoading ? null : _login,
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 side: const BorderSide(color: Color(0xFF12B981)),
