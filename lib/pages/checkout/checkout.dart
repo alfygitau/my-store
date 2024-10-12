@@ -1,9 +1,12 @@
-// ignore_for_file: unused_import
-
+import 'package:e_store/models/Address.dart';
+import 'package:e_store/pages/auth/address.dart';
 import 'package:e_store/pages/auth/login.dart';
-import 'package:e_store/pages/auth/register.dart';
-import 'package:e_store/pages/orders/orders.dart';
+import 'package:e_store/services/address_service.dart';
+import 'package:e_store/services/product_service.dart';
+import 'package:e_store/state/cart_provider.dart';
+import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Checkout extends StatefulWidget {
   const Checkout({super.key});
@@ -14,8 +17,69 @@ class Checkout extends StatefulWidget {
 
 class _CheckoutState extends State<Checkout> {
   bool isCard = false;
+  List<Address> myAddress = [];
+
+  void _fetchCustomerAddresses() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final token = userProvider.token;
+    final user = userProvider.user;
+    final addressService = AddressService();
+    final addresses = await addressService.getCustomerAddresses(
+        token!, user!.customerId.toString());
+    if (addresses != null) {
+      myAddress = addresses;
+    } else {
+      ProductService()
+          .showToast('Failed to fetch customer addresses.', isError: true);
+      myAddress = [];
+    }
+  }
+
+  void placeOrder() async {
+    ProductService productService = ProductService();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.user;
+    final token = userProvider.token;
+    final cartProvider = Provider.of<CartProvider>(context);
+    final cartItems = cartProvider.cart.products;
+
+    final orderItems = cartItems.map((item) {
+      return {
+        "productId": item.product.productId,
+        "quantity": item.product.quantity,
+        "price": item.product.price
+      };
+    }).toList();
+    final mobileMoneyPayment = {
+      "paymentProvider": "MPESA",
+      "msisdn": user!.msisdn
+    };
+    final result = await productService.placeOrder(
+        orderItems: orderItems,
+        customerId: user.customerId,
+        merchantId: 5,
+        totalAmount: cartProvider.cart.totalPrice,
+        shippingAddressId: myAddress[0].shippingAddressId,
+        isDelivery: true,
+        paymentMethod: "mobile_Money",
+        mobileMoneyPayment: mobileMoneyPayment,
+        token: token!);
+    if (result != null) {
+      ProductService().showToast("Order placed successfully");
+    } else {
+      ProductService().showToast("Order placement failed.", isError: true);
+    }
+  }
+
+  @override
+  void initState() {
+    _fetchCustomerAddresses();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -57,33 +121,50 @@ class _CheckoutState extends State<Checkout> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
                       decoration: const BoxDecoration(color: Colors.white),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            'Deliver to',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '2845, Nakuru town, Nakuru',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal),
-                          ),
-                          Text(
-                            'Kenya',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal),
-                          )
-                        ],
-                      ),
+                      child: myAddress.isNotEmpty
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const Text(
+                                  'Deliver to',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  '${myAddress[0].zipCode}, ${myAddress[0].addressLine1}, ${myAddress[0].city}',
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                Text(
+                                  myAddress[0].country,
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal),
+                                )
+                              ],
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const MyAddress()),
+                                );
+                              },
+                              child: const Align(
+                                child: Text(
+                                  'Click to add your address',
+                                  style: TextStyle(
+                                      color: Colors.blue, fontSize: 13),
+                                ),
+                              ),
+                            ),
                     ),
                     const SizedBox(
                       height: 15,
@@ -96,9 +177,9 @@ class _CheckoutState extends State<Checkout> {
                       decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: const Column(
+                      child: Column(
                         children: [
-                          Align(
+                          const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               "PRICE DETAILS",
@@ -108,14 +189,14 @@ class _CheckoutState extends State<Checkout> {
                                   fontWeight: FontWeight.normal),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Divider(
-                            color: Colors.grey,
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -124,8 +205,8 @@ class _CheckoutState extends State<Checkout> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Price(3 products)",
-                                  style: TextStyle(
+                                  "Price(${cartProvider.cart.products.length})",
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 12,
                                       fontWeight: FontWeight.normal),
@@ -134,8 +215,8 @@ class _CheckoutState extends State<Checkout> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "KES 1600.00",
-                                  style: TextStyle(
+                                  "KES ${cartProvider.cart.totalPrice}.00",
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold),
@@ -143,17 +224,17 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Divider(
-                            color: Colors.grey,
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Align(
@@ -178,20 +259,20 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Divider(
-                            color: Colors.grey,
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Align(
+                              const Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   "Total amount",
@@ -204,8 +285,8 @@ class _CheckoutState extends State<Checkout> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "KES 1600.00",
-                                  style: TextStyle(
+                                  "KES ${cartProvider.cart.totalPrice}.00",
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold),
@@ -213,17 +294,17 @@ class _CheckoutState extends State<Checkout> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Divider(
-                            color: Colors.grey,
+                            color: Colors.grey[300],
                             thickness: 1,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
-                          Align(
+                          const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               "You saved KES 120.00 on this order",
@@ -351,9 +432,9 @@ class _CheckoutState extends State<Checkout> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'KES 480.00',
-                            style: TextStyle(
+                          Text(
+                            'KES ${cartProvider.cart.totalPrice}.00',
+                            style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black),

@@ -25,6 +25,7 @@ class _MyAddressState extends State<MyAddress> {
     });
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final user = userProvider.user;
+    final token = userProvider.token;
     AddressService addressService = AddressService();
     Map<String, dynamic> addressData = {
       "customerId": user?.customerId,
@@ -35,7 +36,7 @@ class _MyAddressState extends State<MyAddress> {
       "zipCode": _zipcodeController.text,
       "country": _countryController.text
     };
-    bool success = await addressService.createAddress(addressData);
+    bool success = await addressService.createAddress(addressData, token!);
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Address created successfully!')),

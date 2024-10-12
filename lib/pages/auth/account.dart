@@ -177,9 +177,7 @@ class _AccountProfileState extends State<AccountProfile> {
       },
     );
 
-    if (newPassword != null && newPassword.isNotEmpty) {
-      print('Password updated to: $newPassword');
-    }
+    if (newPassword != null && newPassword.isNotEmpty) {}
   }
 
   void _onItemTapped(int index) {

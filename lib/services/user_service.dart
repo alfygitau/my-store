@@ -58,7 +58,7 @@ class UserService {
         headers: headers,
         body: body,
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         return true;
       } else {
         return false;

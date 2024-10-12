@@ -1,5 +1,6 @@
 import 'package:e_store/pages/auth/account.dart';
 import 'package:e_store/pages/auth/register.dart';
+import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/services/user_service.dart';
 import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -32,18 +33,10 @@ class _LoginState extends State<Login> {
       final user = result['user'];
       Provider.of<UserProvider>(context, listen: false)
           .setUserAndToken(user, token);
-      final lastRoute =
-          Provider.of<UserProvider>(context, listen: false).getLastRoute();
-
-      if (lastRoute != null) {
-        Navigator.pushReplacementNamed(context, lastRoute);
-        Provider.of<UserProvider>(context, listen: false).clearLastRoute();
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AccountProfile()),
-        );
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Landing()),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login failed. Please try again.')),

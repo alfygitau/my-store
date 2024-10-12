@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ProductService {
+  final String baseUrl = 'https://ah.egroup.co.ke/shop/portal/api';
   Future<List<Product>> fetchProducts() async {
     const String apiUrl = 'https://ah.egroup.co.ke/shop/portal/api/product/';
     try {
@@ -97,6 +98,47 @@ class ProductService {
       }
     } catch (e) {
       throw Exception('Error fetching categories: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>?> placeOrder(
+      {required List<Map<String, dynamic>> orderItems,
+      required int customerId,
+      required int merchantId,
+      required double totalAmount,
+      required int shippingAddressId,
+      required bool isDelivery,
+      required String paymentMethod,
+      required Map<String, String> mobileMoneyPayment,
+      required String token}) async {
+    final url = Uri.parse('$baseUrl/order/place');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final body = jsonEncode({
+      'orderItems': orderItems,
+      'customerId': customerId,
+      'merchantId': merchantId,
+      'totalAmount': totalAmount,
+      'shippingAddressId': shippingAddressId,
+      'isDelivery': isDelivery,
+      'paymentMethod': paymentMethod,
+      'mobileMoneyPayment': mobileMoneyPayment,
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        print('Failed to place order: ${response.statusCode}');
+        print('Error: ${response.body}');
+        return null;
+      }
+    } catch (error) {
+      print('Error placing order: $error');
+      return null;
     }
   }
 
