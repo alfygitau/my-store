@@ -1,6 +1,8 @@
 import 'package:e_store/models/Address.dart';
 import 'package:e_store/pages/auth/address.dart';
 import 'package:e_store/pages/auth/login.dart';
+import 'package:e_store/pages/homepage/landing.dart';
+import 'package:e_store/pages/orders/order.dart';
 import 'package:e_store/services/address_service.dart';
 import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
@@ -27,7 +29,9 @@ class _CheckoutState extends State<Checkout> {
     final addresses = await addressService.getCustomerAddresses(
         token!, user!.customerId.toString());
     if (addresses != null) {
-      myAddress = addresses;
+      setState(() {
+        myAddress = addresses;
+      });
     } else {
       ProductService()
           .showToast('Failed to fetch customer addresses.', isError: true);
@@ -36,17 +40,27 @@ class _CheckoutState extends State<Checkout> {
   }
 
   void placeOrder() async {
-    ProductService productService = ProductService();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final user = userProvider.user;
     final token = userProvider.token;
-    final cartProvider = Provider.of<CartProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final cartItems = cartProvider.cart.products;
-
+    if (myAddress.isEmpty) {
+      ProductService().showToast("Add an address for delivery", isError: true);
+      return;
+    }
+    if (!userProvider.isAuthenticated()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+      return;
+    }
+    ProductService productService = ProductService();
     final orderItems = cartItems.map((item) {
       return {
         "productId": item.product.productId,
-        "quantity": item.product.quantity,
+        "quantity": item.quantity,
         "price": item.product.price
       };
     }).toList();
@@ -66,6 +80,10 @@ class _CheckoutState extends State<Checkout> {
         token: token!);
     if (result != null) {
       ProductService().showToast("Order placed successfully");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyOrder()),
+      );
     } else {
       ProductService().showToast("Order placement failed.", isError: true);
     }
@@ -151,7 +169,7 @@ class _CheckoutState extends State<Checkout> {
                             )
                           : GestureDetector(
                               onTap: () {
-                                Navigator.pushReplacement(
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => const MyAddress()),
@@ -205,7 +223,7 @@ class _CheckoutState extends State<Checkout> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Price(${cartProvider.cart.products.length})",
+                                  "Price(${cartProvider.cart.products.length} products)",
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 12,
@@ -425,28 +443,43 @@ class _CheckoutState extends State<Checkout> {
                       height: 15,
                     ),
                     Container(
-                      height: 100,
+                      height: 60,
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: const BoxDecoration(color: Colors.white),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'KES ${cartProvider.cart.totalPrice}.00',
-                            style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
                           OutlinedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Login()),
+                                    builder: (context) => const Landing()),
                               );
                             },
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              side: const BorderSide(color: Color(0xFF12B981)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              minimumSize: const Size(0, 35),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Text(
+                                "Home",
+                                style: TextStyle(
+                                  color: Color(0xFF12B981),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          OutlinedButton(
+                            onPressed: placeOrder,
                             style: OutlinedButton.styleFrom(
                               backgroundColor: const Color(0xFF12B981),
                               side: const BorderSide(color: Color(0xFF12B981)),

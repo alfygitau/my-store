@@ -1,4 +1,3 @@
-import 'package:e_store/pages/auth/account.dart';
 import 'package:e_store/pages/auth/register.dart';
 import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/services/user_service.dart';
@@ -23,24 +22,28 @@ class _LoginState extends State<Login> {
     setState(() {
       _isLoading = true;
     });
-
     final username = _mobileController.text;
     final password = _passwordController.text;
     final result = await _userService.login(username, password);
-
     if (result != null) {
       final token = result['token'];
       final user = result['user'];
       Provider.of<UserProvider>(context, listen: false)
           .setUserAndToken(user, token);
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const Landing()),
       );
+      setState(() {
+        _isLoading = false;
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login failed. Please try again.')),
       );
+      setState(() {
+        _isLoading = false;
+      });
     }
     setState(() {
       _isLoading = false;
@@ -85,13 +88,14 @@ class _LoginState extends State<Login> {
             const SizedBox(
               height: 5,
             ),
-            _buildInputField("Enter your password", _passwordController),
+            _buildInputField("Enter your password", _passwordController,
+                isPassword: true),
             const SizedBox(
               height: 10,
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Register()),
                 );
@@ -120,16 +124,25 @@ class _LoginState extends State<Login> {
                 ),
                 minimumSize: const Size(double.infinity, 50),
               ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.0),
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                    color: Color(0xFF12B981),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: _isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(Color(0xFF12B981)),
+                          strokeWidth: 2.0,
+                        ),
+                      )
+                    : const Text(
+                        "Login",
+                        style: TextStyle(
+                          color: Color(0xFF12B981),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
           ],

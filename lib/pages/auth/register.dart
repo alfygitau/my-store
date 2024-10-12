@@ -36,7 +36,7 @@ class _RegisterState extends State<Register> {
         _isLoading = false;
       });
       ProductService().showToast('User created successfully!');
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const Login()),
       );

@@ -456,7 +456,7 @@ class _CartState extends State<Cart> {
                 ),
                 if (cartItems.isNotEmpty)
                   Container(
-                    height: 100,
+                    height: 70,
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: const BoxDecoration(color: Colors.white),
