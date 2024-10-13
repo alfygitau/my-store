@@ -306,168 +306,155 @@ class _MyProductState extends State<MyProduct> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      height: 90,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Checkout()),
-                                      );
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(
-                                        color: Color(0xFF12B981),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.shopping_basket_outlined,
-                                      size: 20,
-                                      color: Color(0xFF12B981),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                Expanded(
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Landing()),
-                                      );
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(
-                                        color: Color(0xFF12B981),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.home_outlined,
-                                      size: 20,
-                                      color: Color(0xFF12B981),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: cartProvider
-                                    .isInCart(convertToProduct(product!))
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: const Color(0xFF12B981)),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: Center(
-                                          child: IconButton(
-                                            icon: const Icon(
-                                              Icons.remove,
-                                              color: Color(0xFF12B981),
-                                            ),
-                                            onPressed: () {
-                                              cartProvider.decreaseQuantity(
-                                                  product?.productId
-                                                          .toString() ??
-                                                      "");
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 20),
-                                      Text(
-                                          '${cartProvider.getQuantity(product!.productId.toString())}'),
-                                      const SizedBox(width: 20),
-                                      Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF12B981),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: Center(
-                                          child: IconButton(
-                                            icon: const Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              cartProvider
-                                                  .addOrIncreaseQuantity(
-                                                      convertToProduct(
-                                                          product!),
-                                                      product!.productId
-                                                          .toString());
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : ElevatedButton.icon(
-                                    onPressed: () {
-                                      cartProvider.addProduct(
-                                          convertToProduct(product!));
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF12B981),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                    ),
-                                    icon: const Icon(
-                                      Icons.shopping_bag_outlined,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
-                                    label: const Text(
-                                      'Add to Cart',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    )
                   ]),
                 ),
               ),
             ),
+      bottomNavigationBar: Container(
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Checkout()),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: Color(0xFF12B981),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.shopping_basket_outlined,
+                        size: 20,
+                        color: Color(0xFF12B981),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Landing()),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: Color(0xFF12B981),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.home_outlined,
+                        size: 20,
+                        color: Color(0xFF12B981),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: cartProvider.isInCart(convertToProduct(product!))
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xFF12B981)),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Center(
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.remove,
+                                color: Color(0xFF12B981),
+                              ),
+                              onPressed: () {
+                                cartProvider.decreaseQuantity(
+                                    product?.productId.toString() ?? "");
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Text(
+                            '${cartProvider.getQuantity(product!.productId.toString())}'),
+                        const SizedBox(width: 20),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF12B981),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Center(
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                cartProvider.addOrIncreaseQuantity(
+                                    convertToProduct(product!),
+                                    product!.productId.toString());
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : ElevatedButton.icon(
+                      onPressed: () {
+                        cartProvider.addProduct(convertToProduct(product!));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF12B981),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.shopping_bag_outlined,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        'Add to Cart',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

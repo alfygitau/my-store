@@ -1,3 +1,4 @@
+import 'package:e_store/pages/auth/account.dart';
 import 'package:e_store/pages/auth/login.dart';
 import 'package:e_store/pages/checkout/checkout.dart';
 import 'package:e_store/pages/homepage/landing.dart';
@@ -51,6 +52,7 @@ class _MyCartState extends State<MyCart> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final cartItems = cartProvider.cart.products;
     final cart = cartProvider.cart;
     return Scaffold(
@@ -79,7 +81,20 @@ class _MyCartState extends State<MyCart> {
           IconButton(
             icon:
                 const Icon(Icons.account_circle_outlined, color: Colors.black),
-            onPressed: () {},
+            onPressed: () {
+              if (userProvider.isAuthenticated()) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AccountProfile()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Login()),
+                );
+              }
+            },
           ),
           IconButton(
             icon: const Icon(Icons.help_outline_outlined, color: Colors.black),
@@ -180,7 +195,7 @@ class _MyCartState extends State<MyCart> {
                                                 cartItems[index].product.title,
                                                 style: const TextStyle(
                                                     fontSize: 13,
-                                                    fontWeight: FontWeight.w500,
+                                                    fontWeight: FontWeight.w700,
                                                     color: Colors.black),
                                                 textAlign: TextAlign.left,
                                               ),
