@@ -1,6 +1,7 @@
 import 'package:e_store/models/Address.dart';
 import 'package:e_store/pages/auth/address.dart';
 import 'package:e_store/pages/auth/login.dart';
+import 'package:e_store/pages/cart/cart.dart';
 import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/pages/orders/order.dart';
 import 'package:e_store/services/address_service.dart';
@@ -99,7 +100,8 @@ class _CheckoutState extends State<Checkout> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context);
+    int cartItemCount = cartProvider.cart.products.length;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -120,7 +122,55 @@ class _CheckoutState extends State<Checkout> {
         centerTitle: false,
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
+            icon: const Icon(
+              Icons.search,
+              color: Color(0xFF12B981),
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Stack(
+              children: <Widget>[
+                const Icon(Icons.shopping_bag_outlined,
+                    color: Color(0xFF12B981)),
+                if (cartItemCount > 0)
+                  Positioned(
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 12,
+                        minHeight: 12,
+                      ),
+                      child: Text(
+                        '$cartItemCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MyCart()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.help_outline,
+              color: Color(0xFF12B981),
+            ),
             onPressed: () {},
           ),
         ],
