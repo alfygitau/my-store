@@ -12,6 +12,7 @@ import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Landing extends StatefulWidget {
@@ -385,11 +386,14 @@ class _LandingState extends State<Landing> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "KES ${product.price}",
+                                          NumberFormat.currency(
+                                                  symbol: 'KES ',
+                                                  decimalDigits: 2)
+                                              .format(product.price),
                                           style: const TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue),
                                         ),
                                       ],
                                     ),
