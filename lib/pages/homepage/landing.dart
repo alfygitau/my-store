@@ -167,7 +167,12 @@ class _LandingState extends State<Landing> {
                         ),
                     ],
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MyCart()),
+                    );
+                  },
                 ),
                 IconButton(
                   icon: const Icon(
@@ -342,7 +347,7 @@ class _LandingState extends State<Landing> {
                           child: Row(
                             children: [
                               Container(
-                                height: 100,
+                                height: 125,
                                 width: 100,
                                 decoration: const BoxDecoration(
                                   borderRadius:

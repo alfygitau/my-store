@@ -1,5 +1,6 @@
 import 'package:e_store/models/CategoryProducts.dart';
 import 'package:e_store/models/Product.dart';
+import 'package:e_store/pages/cart/cart.dart';
 import 'package:e_store/pages/products/product.dart';
 import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
@@ -77,6 +78,7 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    int cartItemCount = cartProvider.cart.products.length;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -90,14 +92,62 @@ class _ProductsState extends State<Products> {
             widget.category,
             style: const TextStyle(
               color: Colors.black,
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
           ),
           centerTitle: false,
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.search, color: Colors.black),
+              icon: const Icon(
+                Icons.search,
+                color: Color(0xFF12B981),
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Stack(
+                children: <Widget>[
+                  const Icon(Icons.shopping_bag_outlined,
+                      color: Color(0xFF12B981)),
+                  if (cartItemCount > 0)
+                    Positioned(
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 12,
+                          minHeight: 12,
+                        ),
+                        child: Text(
+                          '$cartItemCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyCart()),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.help_outline,
+                color: Color(0xFF12B981),
+              ),
               onPressed: () {},
             ),
           ],
@@ -112,7 +162,7 @@ class _ProductsState extends State<Products> {
                   height: 10,
                 ),
                 Container(
-                  height: 70,
+                  height: 50,
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: const BoxDecoration(color: Colors.white),
@@ -187,7 +237,7 @@ class _ProductsState extends State<Products> {
                                   child: Row(
                                     children: [
                                       Container(
-                                        height: 100,
+                                        height: 130,
                                         width: 100,
                                         decoration: const BoxDecoration(
                                           borderRadius: BorderRadius.all(

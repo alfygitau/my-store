@@ -4,6 +4,7 @@ import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/state/cart_provider.dart';
 import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MyCart extends StatefulWidget {
@@ -65,7 +66,7 @@ class _MyCartState extends State<MyCart> {
           "My cart (${cartItems.length})",
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -73,6 +74,15 @@ class _MyCartState extends State<MyCart> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.search, color: Colors.black),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon:
+                const Icon(Icons.account_circle_outlined, color: Colors.black),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.help_outline_outlined, color: Colors.black),
             onPressed: () {},
           ),
         ],
@@ -105,7 +115,9 @@ class _MyCartState extends State<MyCart> {
                           style: TextStyle(
                               color: Colors.red,
                               fontWeight: FontWeight.normal,
-                              fontSize: 11),
+                              fontSize: 11,
+                              decorationColor: Colors.red,
+                              decoration: TextDecoration.underline),
                         ),
                       ),
                   ],
@@ -200,9 +212,15 @@ class _MyCartState extends State<MyCart> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  "KES ${cartItems[index].product.price}.00",
+                                                  NumberFormat.currency(
+                                                          symbol: 'KES ',
+                                                          decimalDigits: 2)
+                                                      .format(cartItems[index]
+                                                          .product
+                                                          .price),
                                                   style: const TextStyle(
                                                       fontSize: 13,
+                                                      color: Colors.blue,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
@@ -227,7 +245,12 @@ class _MyCartState extends State<MyCart> {
                                                         color: Colors.red,
                                                         fontWeight:
                                                             FontWeight.w300,
-                                                        fontSize: 12),
+                                                        fontSize: 12,
+                                                        decorationColor:
+                                                            Colors.red,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline),
                                                   ),
                                                 ),
                                                 Row(
@@ -422,9 +445,11 @@ class _MyCartState extends State<MyCart> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                "KES ${cart.totalPrice.toStringAsFixed(2)}",
+                                NumberFormat.currency(
+                                        symbol: 'KES ', decimalDigits: 2)
+                                    .format(cart.totalPrice),
                                 style: const TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.blue,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -457,9 +482,11 @@ class _MyCartState extends State<MyCart> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                "KES ${cart.totalPrice.toStringAsFixed(2)}",
+                                NumberFormat.currency(
+                                        symbol: 'KES ', decimalDigits: 2)
+                                    .format(cart.totalPrice),
                                 style: const TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.blue,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -581,7 +608,7 @@ class _MyCartState extends State<MyCart> {
                     minimumSize: const Size(0, 35),
                   ),
                   child: Text(
-                    "Checkout (KES ${cart.totalPrice.toStringAsFixed(2)})",
+                    "Checkout (${NumberFormat.currency(symbol: 'KES ', decimalDigits: 2).format(cart.totalPrice)})",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
