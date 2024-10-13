@@ -8,6 +8,7 @@ import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
 import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Checkout extends StatefulWidget {
@@ -98,6 +99,7 @@ class _CheckoutState extends State<Checkout> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -152,14 +154,14 @@ class _CheckoutState extends State<Checkout> {
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '${myAddress[0].zipCode}, ${myAddress[0].addressLine1}, ${myAddress[0].city}',
+                                '${myAddress[0].zipCode}, ${myAddress[0].addressLine1}, ${myAddress[0].city}, ${myAddress[0].country}',
                                 style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 12,
                                     fontWeight: FontWeight.normal),
                               ),
                               Text(
-                                myAddress[0].country,
+                                userProvider.user!.msisdn,
                                 style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 12,
@@ -233,9 +235,11 @@ class _CheckoutState extends State<Checkout> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                "KES ${cartProvider.cart.totalPrice}.00",
+                                NumberFormat.currency(
+                                        symbol: 'KES ', decimalDigits: 2)
+                                    .format(cartProvider.cart.totalPrice),
                                 style: const TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.blue,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -303,9 +307,11 @@ class _CheckoutState extends State<Checkout> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                "KES ${cartProvider.cart.totalPrice}.00",
+                                NumberFormat.currency(
+                                        symbol: 'KES ', decimalDigits: 2)
+                                    .format(cartProvider.cart.totalPrice),
                                 style: const TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.blue,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold),
                               ),

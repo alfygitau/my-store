@@ -52,7 +52,7 @@ class _MyCartState extends State<MyCart> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context);
     final cartItems = cartProvider.cart.products;
     final cart = cartProvider.cart;
     return Scaffold(
