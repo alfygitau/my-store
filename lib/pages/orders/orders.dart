@@ -1,5 +1,10 @@
+import 'package:e_store/models/Order.dart';
 import 'package:e_store/pages/orders/order.dart';
+import 'package:e_store/services/product_service.dart';
+import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MyOrders extends StatefulWidget {
   const MyOrders({super.key});
@@ -9,6 +14,29 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
+  List<Order> allOrders = [];
+  void fetchOrders() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    ProductService productService = ProductService();
+    int customerId = userProvider.user!.customerId;
+    final token = userProvider.token;
+    try {
+      List<Order> orders =
+          await productService.getCustomerOrders(customerId, token!);
+      setState(() {
+        allOrders = orders;
+      });
+    } catch (e) {
+      ProductService().showToast(e.toString(), isError: true);
+    }
+  }
+
+  @override
+  void initState() {
+    fetchOrders();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +52,7 @@ class _MyOrdersState extends State<MyOrders> {
           "My orders",
           style: TextStyle(
             color: Colors.black,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -51,8 +79,9 @@ class _MyOrdersState extends State<MyOrders> {
                   height: 700,
                   child: ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: 5,
+                      itemCount: allOrders.length,
                       itemBuilder: (context, index) {
+                        final order = allOrders[index];
                         return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: GestureDetector(
@@ -60,11 +89,12 @@ class _MyOrdersState extends State<MyOrders> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const MyOrder()),
+                                      builder: (context) =>
+                                          MyOrder(orderId: order.orderId)),
                                 );
                               },
                               child: Container(
-                                height: 110,
+                                height: 200,
                                 margin: const EdgeInsets.symmetric(vertical: 5),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 5),
@@ -72,25 +102,29 @@ class _MyOrdersState extends State<MyOrders> {
                                 decoration: const BoxDecoration(
                                     color: Colors.white,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
+                                        BorderRadius.all(Radius.circular(10))),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Row(
+                                    Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Order No #25643',
-                                          style: TextStyle(
-                                              color: Colors.black,
+                                          'Order No ${order.orderId}',
+                                          style: const TextStyle(
+                                              color: Colors.red,
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          'KES 1200.00',
-                                          style: TextStyle(
-                                              color: Colors.black,
+                                          NumberFormat.currency(
+                                                  symbol: 'KES ',
+                                                  decimalDigits: 2)
+                                              .format(order.charge),
+                                          style: const TextStyle(
+                                              color: Colors.blue,
                                               fontSize: 12,
                                               fontWeight: FontWeight.w800),
                                         ),
@@ -99,18 +133,18 @@ class _MyOrdersState extends State<MyOrders> {
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    const Row(
+                                    Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '11 september 2024',
-                                          style: TextStyle(
+                                          order.createdAt,
+                                          style: const TextStyle(
                                               color: Colors.grey,
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal),
                                         ),
-                                        Text(
+                                        const Text(
                                           'You saved 10% of the cost price',
                                           style: TextStyle(
                                               color: Color(0xFF12B981),
@@ -126,12 +160,70 @@ class _MyOrdersState extends State<MyOrders> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text(
-                                          'Number of products: 4',
-                                          style: TextStyle(
+                                        Text(
+                                          '${order.orderItems.length} products',
+                                          style: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 12,
-                                              fontWeight: FontWeight.w300),
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Customer mobile: ${order.customer.msisdn}',
+                                            style: const TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Payment status: ${order.paymentStatus}',
+                                            style: const TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Delivery status: ${order.isDelivery ? 'No' : 'Yes'}',
+                                            style: const TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        ),
+                                        Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              'Payment method: ${order.paymentMethod}',
+                                              style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            )),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Text(
+                                          'Order status',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
                                         ),
                                         OutlinedButton(
                                           onPressed: () {},
@@ -145,12 +237,12 @@ class _MyOrdersState extends State<MyOrders> {
                                             ),
                                             minimumSize: const Size(60, 25),
                                           ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.symmetric(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
                                                 horizontal: 5.0),
                                             child: Text(
-                                              "Placed",
-                                              style: TextStyle(
+                                              order.orderStatus,
+                                              style: const TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,

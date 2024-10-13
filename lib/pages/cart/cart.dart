@@ -2,6 +2,7 @@ import 'package:e_store/pages/auth/account.dart';
 import 'package:e_store/pages/auth/login.dart';
 import 'package:e_store/pages/checkout/checkout.dart';
 import 'package:e_store/pages/homepage/landing.dart';
+import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
 import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _MyCartState extends State<MyCart> {
       _selectedIndex = index;
     });
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     switch (index) {
       case 0:
         Navigator.push(
@@ -34,11 +36,15 @@ class _MyCartState extends State<MyCart> {
         print("Call Pressed");
         break;
       case 2:
-        if (userProvider.isAuthenticated()) {
+        if (userProvider.isAuthenticated() &&
+            cartProvider.cart.products.isNotEmpty) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Checkout()),
           );
+        } else if (userProvider.isAuthenticated() &&
+            cartProvider.cart.products.isEmpty) {
+          ProductService().showToast("You have an empty cart", isError: true);
         } else {
           Navigator.push(
             context,
@@ -615,15 +621,23 @@ class _MyCartState extends State<MyCart> {
                     _onItemTapped(2);
                   },
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: const Color(0xFF12B981),
-                    side: const BorderSide(color: Color(0xFF12B981)),
+                    backgroundColor: cart.products.isEmpty
+                        ? Colors.grey
+                        : const Color(0xFF12B981),
+                    side: BorderSide(
+                      color: cart.products.isEmpty
+                          ? Colors.grey
+                          : const Color(0xFF12B981),
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                     minimumSize: const Size(0, 35),
                   ),
                   child: Text(
-                    "Checkout (${NumberFormat.currency(symbol: 'KES ', decimalDigits: 2).format(cart.totalPrice)})",
+                    cart.products.isEmpty
+                        ? 'Checkout'
+                        : "Checkout (${NumberFormat.currency(symbol: 'KES ', decimalDigits: 2).format(cart.totalPrice)})",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,

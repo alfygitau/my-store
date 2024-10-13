@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:e_store/models/CategoryProducts.dart';
+import 'package:e_store/models/Order.dart';
 import 'package:e_store/models/Product.dart';
 import 'package:e_store/models/ProductCategory.dart';
 import 'package:e_store/models/SingleProduct.dart';
@@ -138,6 +139,50 @@ class ProductService {
       }
     } catch (error) {
       print('Error placing order: $error');
+      return null;
+    }
+  }
+
+  Future<List<Order>> getCustomerOrders(int customerId, String token) async {
+    final url = Uri.parse('$baseUrl/order/get-by-customer/$customerId');
+    try {
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final List<dynamic> orderData = data['message'];
+        return orderData.map((json) => Order.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load orders');
+      }
+    } catch (error) {
+      throw Exception('Error fetching customer orders: $error');
+    }
+  }
+
+  Future<Order?> fetchOrderById(int orderId, String token) async {
+    final String apiUrl = '$baseUrl/order/get/$orderId';
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data =
+            json.decode(response.body)['message'];
+        return Order.fromJson(data);
+      } else {
+        print('Failed to load order. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (error) {
+      print('Error fetching order: $error');
       return null;
     }
   }

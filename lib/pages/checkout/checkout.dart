@@ -3,7 +3,7 @@ import 'package:e_store/pages/auth/address.dart';
 import 'package:e_store/pages/auth/login.dart';
 import 'package:e_store/pages/cart/cart.dart';
 import 'package:e_store/pages/homepage/landing.dart';
-import 'package:e_store/pages/orders/order.dart';
+import 'package:e_store/pages/orders/orders.dart';
 import 'package:e_store/services/address_service.dart';
 import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
@@ -84,7 +84,7 @@ class _CheckoutState extends State<Checkout> {
       ProductService().showToast("Order placed successfully");
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MyOrder()),
+        MaterialPageRoute(builder: (context) => const MyOrders()),
       );
     } else {
       ProductService().showToast("Order placement failed.", isError: true);
