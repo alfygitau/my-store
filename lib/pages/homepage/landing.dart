@@ -77,10 +77,17 @@ class _LandingState extends State<Landing> {
         );
         break;
       case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MyOrders()),
-        );
+        if (userProvider.isAuthenticated()) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MyOrders()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Login()),
+          );
+        }
         break;
       case 3:
         if (userProvider.isAuthenticated()) {

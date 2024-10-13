@@ -1,6 +1,8 @@
+import 'package:e_store/pages/auth/login.dart';
 import 'package:e_store/pages/checkout/checkout.dart';
 import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/state/cart_provider.dart';
+import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,10 +15,12 @@ class MyCart extends StatefulWidget {
 
 class _MyCartState extends State<MyCart> {
   int _selectedIndex = 0;
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     switch (index) {
       case 0:
         Navigator.push(
@@ -28,10 +32,17 @@ class _MyCartState extends State<MyCart> {
         print("Call Pressed");
         break;
       case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Checkout()),
-        );
+        if (userProvider.isAuthenticated()) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Checkout()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Login()),
+          );
+        }
         break;
     }
   }
