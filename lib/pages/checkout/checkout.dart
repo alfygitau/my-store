@@ -514,6 +514,7 @@ class _CheckoutState extends State<Checkout> {
               flex: 1,
               child: OutlinedButton(
                 onPressed: () {
+                  cartProvider.clearCart();
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const Landing()),

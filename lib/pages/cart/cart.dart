@@ -37,14 +37,14 @@ class _MyCartState extends State<MyCart> {
         break;
       case 2:
         if (userProvider.isAuthenticated() &&
+            cartProvider.cart.products.isEmpty) {
+          ProductService().showToast("You have an empty cart", isError: true);
+        } else if (userProvider.isAuthenticated() &&
             cartProvider.cart.products.isNotEmpty) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Checkout()),
           );
-        } else if (userProvider.isAuthenticated() &&
-            cartProvider.cart.products.isEmpty) {
-          ProductService().showToast("You have an empty cart", isError: true);
         } else {
           Navigator.push(
             context,
