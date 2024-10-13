@@ -105,7 +105,6 @@ class ProductService {
   Future<Map<String, dynamic>?> placeOrder(
       {required List<Map<String, dynamic>> orderItems,
       required int customerId,
-      required int merchantId,
       required double totalAmount,
       required int shippingAddressId,
       required bool isDelivery,
@@ -120,7 +119,6 @@ class ProductService {
     final body = jsonEncode({
       'orderItems': orderItems,
       'customerId': customerId,
-      'merchantId': merchantId,
       'totalAmount': totalAmount,
       'shippingAddressId': shippingAddressId,
       'isDelivery': isDelivery,
@@ -129,7 +127,6 @@ class ProductService {
     });
     try {
       final response = await http.post(url, headers: headers, body: body);
-      print(body);
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
@@ -174,8 +171,7 @@ class ProductService {
         },
       );
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data =
-            json.decode(response.body)['message'];
+        final Map<String, dynamic> data = json.decode(response.body)['message'];
         return Order.fromJson(data);
       } else {
         print('Failed to load order. Status code: ${response.statusCode}');

@@ -73,7 +73,6 @@ class _CheckoutState extends State<Checkout> {
     final result = await productService.placeOrder(
         orderItems: orderItems,
         customerId: user.customerId,
-        merchantId: 5,
         totalAmount: cartProvider.cart.totalPrice,
         shippingAddressId: myAddress[0].shippingAddressId,
         isDelivery: true,
@@ -82,6 +81,7 @@ class _CheckoutState extends State<Checkout> {
         token: token!);
     if (result != null) {
       ProductService().showToast("Order placed successfully");
+      cartProvider.clearCart();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const MyOrders()),

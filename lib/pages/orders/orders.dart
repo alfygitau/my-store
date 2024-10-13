@@ -1,4 +1,5 @@
 import 'package:e_store/models/Order.dart';
+import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/pages/orders/order.dart';
 import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/user_provider.dart';
@@ -61,6 +62,15 @@ class _MyOrdersState extends State<MyOrders> {
           IconButton(
             icon: const Icon(Icons.search, color: Colors.black),
             onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.home_outlined, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Landing()),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.help_outline_outlined, color: Colors.black),
@@ -185,7 +195,7 @@ class _MyOrdersState extends State<MyOrders> {
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
-                                            'Delivery status: ${order.isDelivery ? 'No' : 'Yes'}',
+                                            'Delivery status: ${order.isDelivery ? 'Not delivered' : 'Delivered'}',
                                             style: const TextStyle(
                                                 color: Colors.grey,
                                                 fontSize: 12,

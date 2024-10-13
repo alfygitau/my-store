@@ -118,7 +118,7 @@ class _MyOrderState extends State<MyOrder> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          product!.title,
+                                          product?.title ?? "",
                                           style: const TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w600,
@@ -132,7 +132,7 @@ class _MyOrderState extends State<MyOrder> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          product.description,
+                                          product?.description ?? "",
                                           style: const TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w300,
@@ -153,7 +153,7 @@ class _MyOrderState extends State<MyOrder> {
                                             NumberFormat.currency(
                                                     symbol: 'KES ',
                                                     decimalDigits: 2)
-                                                .format(product.price),
+                                                .format(product?.price ?? 0.0),
                                             style: const TextStyle(
                                                 fontSize: 13,
                                                 color: Colors.blue,
@@ -166,7 +166,7 @@ class _MyOrderState extends State<MyOrder> {
                                           Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                'Quantity: ${product.quantity} unit(s)',
+                                                'Quantity: ${product?.quantity ?? 0} unit(s)',
                                                 style: const TextStyle(
                                                     fontSize: 12,
                                                     fontWeight:
@@ -219,11 +219,11 @@ class _MyOrderState extends State<MyOrder> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Align(
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Price(3 products)",
-                              style: TextStyle(
+                              "Price(${myOrder?.orderItems.length} products)",
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.normal),
@@ -234,7 +234,7 @@ class _MyOrderState extends State<MyOrder> {
                             child: Text(
                               NumberFormat.currency(
                                       symbol: 'KES ', decimalDigits: 2)
-                                  .format(myOrder!.charge),
+                                  .format(myOrder?.charge ?? 0.0),
                               style: const TextStyle(
                                   color: Colors.blue,
                                   fontSize: 12,
@@ -271,7 +271,7 @@ class _MyOrderState extends State<MyOrder> {
                             child: Text(
                               NumberFormat.currency(
                                       symbol: 'KES ', decimalDigits: 2)
-                                  .format(myOrder!.charge),
+                                  .format(myOrder?.charge ?? 0.0),
                               style: const TextStyle(
                                   color: Colors.blue,
                                   fontSize: 12,

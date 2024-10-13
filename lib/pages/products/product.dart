@@ -6,6 +6,7 @@ import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
 import 'package:flutter/material.dart';
 import "package:e_store/models/SingleProduct.dart";
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MyProduct extends StatefulWidget {
@@ -167,7 +168,7 @@ class _MyProductState extends State<MyProduct> {
                       height: 10,
                     ),
                     SizedBox(
-                      height: 250,
+                      height: 220,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: product!.images.length,
@@ -176,7 +177,7 @@ class _MyProductState extends State<MyProduct> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Container(
-                                height: 250,
+                                height: 220,
                                 width: MediaQuery.of(context).size.width * 0.95,
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
@@ -185,7 +186,7 @@ class _MyProductState extends State<MyProduct> {
                                 ),
                                 child: Center(
                                   child: Container(
-                                    height: 250 * 0.9,
+                                    height: 220 * 0.9,
                                     width: MediaQuery.of(context).size.width *
                                         0.95 *
                                         0.9,
@@ -195,7 +196,7 @@ class _MyProductState extends State<MyProduct> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(5),
                                       child: Image.network(
-                                        product!.images[index].imageUrl,
+                                        product?.images[index].imageUrl ?? "",
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -222,7 +223,7 @@ class _MyProductState extends State<MyProduct> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              product!.title,
+                              product?.title ?? "",
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w500),
                             ),
@@ -243,7 +244,9 @@ class _MyProductState extends State<MyProduct> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'KSH ${product!.price}.00',
+                              NumberFormat.currency(
+                                      symbol: 'KES ', decimalDigits: 2)
+                                  .format(product?.price),
                               style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
@@ -253,7 +256,7 @@ class _MyProductState extends State<MyProduct> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Units available in stock : ${product!.stockBalance} units',
+                              'Units available in stock : ${product?.stockBalance} units',
                               style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
@@ -311,7 +314,7 @@ class _MyProductState extends State<MyProduct> {
               ),
             ),
       bottomNavigationBar: Container(
-        height: 80,
+        height: 90,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         width: double.infinity,
         decoration: const BoxDecoration(
@@ -378,79 +381,85 @@ class _MyProductState extends State<MyProduct> {
             ),
             const SizedBox(width: 5),
             Expanded(
-              child: cartProvider.isInCart(convertToProduct(product!))
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFF12B981)),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Center(
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.remove,
-                                color: Color(0xFF12B981),
+              child: product == null
+                  ? Container()
+                  : cartProvider.isInCart(convertToProduct(product!))
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: const Color(0xFF12B981)),
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                              onPressed: () {
-                                cartProvider.decreaseQuantity(
-                                    product?.productId.toString() ?? "");
-                              },
+                              child: Center(
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.remove,
+                                    color: Color(0xFF12B981),
+                                  ),
+                                  onPressed: () {
+                                    cartProvider.decreaseQuantity(
+                                      product?.productId?.toString() ?? '',
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              '${cartProvider.getQuantity(product!.productId.toString())}',
+                            ),
+                            const SizedBox(width: 20),
+                            Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF12B981),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    cartProvider.addOrIncreaseQuantity(
+                                      convertToProduct(product!),
+                                      product!.productId.toString(),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : ElevatedButton.icon(
+                          onPressed: () {
+                            cartProvider.addProduct(convertToProduct(product!));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF12B981),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.shopping_bag_outlined,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            'Add to Cart',
+                            style: TextStyle(
+                              color: Colors.white,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 20),
-                        Text(
-                            '${cartProvider.getQuantity(product!.productId.toString())}'),
-                        const SizedBox(width: 20),
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF12B981),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Center(
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                cartProvider.addOrIncreaseQuantity(
-                                    convertToProduct(product!),
-                                    product!.productId.toString());
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : ElevatedButton.icon(
-                      onPressed: () {
-                        cartProvider.addProduct(convertToProduct(product!));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF12B981),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                      icon: const Icon(
-                        Icons.shopping_bag_outlined,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        'Add to Cart',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
             ),
           ],
         ),
