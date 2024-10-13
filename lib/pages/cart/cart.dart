@@ -36,8 +36,7 @@ class _MyCartState extends State<MyCart> {
         print("Call Pressed");
         break;
       case 2:
-        if (userProvider.isAuthenticated() &&
-            cartProvider.cart.products.isEmpty) {
+        if (cartProvider.cart.products.isEmpty) {
           ProductService().showToast("You have an empty cart", isError: true);
         } else if (userProvider.isAuthenticated() &&
             cartProvider.cart.products.isNotEmpty) {
