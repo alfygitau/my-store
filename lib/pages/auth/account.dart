@@ -239,7 +239,7 @@ class _AccountProfileState extends State<AccountProfile> {
           "Account Profile",
           style: TextStyle(
             color: Colors.black,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -279,7 +279,7 @@ class _AccountProfileState extends State<AccountProfile> {
                 title: Text(
                   '${user?.email}',
                   style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.bold),
+                      fontSize: 14, fontWeight: FontWeight.normal),
                 ),
                 tileColor: const Color(0xFFE0F2F1),
                 contentPadding:

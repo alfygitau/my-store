@@ -1,4 +1,7 @@
 import 'package:e_store/models/Product.dart';
+import 'package:e_store/pages/cart/cart.dart';
+import 'package:e_store/pages/checkout/checkout.dart';
+import 'package:e_store/pages/homepage/landing.dart';
 import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/cart_provider.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +76,7 @@ class _MyProductState extends State<MyProduct> {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    int cartItemCount = cartProvider.cart.products.length;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -86,14 +90,65 @@ class _MyProductState extends State<MyProduct> {
           product?.title ?? 'Loading...',
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: false,
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
+            icon: const Icon(
+              Icons.search,
+              color: Color(0xFF12B981),
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Stack(
+              children: <Widget>[
+                const Icon(
+                  Icons.shopping_bag_outlined,
+                  color: Color(0xFF12B981),
+                ),
+                if (cartItemCount > 0)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 12,
+                        minHeight: 12,
+                      ),
+                      child: Text(
+                        '$cartItemCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MyCart()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.help_outline,
+              color: Color(0xFF12B981),
+            ),
             onPressed: () {},
           ),
         ],
@@ -257,67 +312,104 @@ class _MyProductState extends State<MyProduct> {
                           horizontal: 10, vertical: 10),
                       width: double.infinity,
                       decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            OutlinedButton.icon(
-                              onPressed: () {},
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(
-                                  color: Color(0xFF12B981),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Checkout()),
+                                      );
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                        color: Color(0xFF12B981),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.shopping_basket_outlined,
+                                      size: 20,
+                                      color: Color(0xFF12B981),
+                                    ),
+                                  ),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(3),
+                                const SizedBox(width: 5),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Landing()),
+                                      );
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                        color: Color(0xFF12B981),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.home_outlined,
+                                      size: 20,
+                                      color: Color(0xFF12B981),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              icon: const Icon(
-                                Icons.shopping_bag,
-                                color: Color(0xFF12B981),
-                              ),
-                              label: const Text(
-                                'Buy Now',
-                                style: TextStyle(
-                                  color: Color(0xFF12B981),
-                                ),
-                              ),
+                              ],
                             ),
-                            cartProvider.isInCart(convertToProduct(product!))
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: cartProvider
+                                    .isInCart(convertToProduct(product!))
                                 ? Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
-                                          height: 40,
-                                          width: 40,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: const Color(0xFF12B981)),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          child: Center(
-                                            child: IconButton(
-                                              icon: const Icon(
-                                                Icons.remove,
-                                                color: Color(0xFF12B981),
-                                              ),
-                                              onPressed: () {
-                                                cartProvider.decreaseQuantity(
-                                                    product?.productId
-                                                            .toString() ??
-                                                        "");
-                                              },
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: const Color(0xFF12B981)),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.remove,
+                                              color: Color(0xFF12B981),
                                             ),
-                                          )),
-                                      const SizedBox(
-                                        width: 10,
+                                            onPressed: () {
+                                              cartProvider.decreaseQuantity(
+                                                  product?.productId
+                                                          .toString() ??
+                                                      "");
+                                            },
+                                          ),
+                                        ),
                                       ),
+                                      const SizedBox(width: 20),
                                       Text(
                                           '${cartProvider.getQuantity(product!.productId.toString())}'),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
+                                      const SizedBox(width: 20),
                                       Container(
                                         height: 40,
                                         width: 40,
@@ -357,7 +449,8 @@ class _MyProductState extends State<MyProduct> {
                                       ),
                                     ),
                                     icon: const Icon(
-                                      Icons.shopping_cart,
+                                      Icons.shopping_bag_outlined,
+                                      size: 20,
                                       color: Colors.white,
                                     ),
                                     label: const Text(
@@ -367,7 +460,9 @@ class _MyProductState extends State<MyProduct> {
                                       ),
                                     ),
                                   ),
-                          ]),
+                          ),
+                        ],
+                      ),
                     )
                   ]),
                 ),

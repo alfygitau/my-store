@@ -72,7 +72,7 @@ class _LandingState extends State<Landing> {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Cart()),
+          MaterialPageRoute(builder: (context) => const MyCart()),
         );
         break;
       case 2:
@@ -119,12 +119,56 @@ class _LandingState extends State<Landing> {
               width: 30,
               height: 30,
             ),
-            IconButton(
-              icon: const Icon(
-                Icons.search,
-                color: Color(0xFF12B981),
-              ),
-              onPressed: () {},
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.search,
+                    color: Color(0xFF12B981),
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Stack(
+                    children: <Widget>[
+                      const Icon(Icons.shopping_bag_outlined,
+                          color: Color(0xFF12B981)),
+                      if (cartItemCount > 0)
+                        Positioned(
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 12,
+                              minHeight: 12,
+                            ),
+                            child: Text(
+                              '$cartItemCount',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.help_outline,
+                    color: Color(0xFF12B981),
+                  ),
+                  onPressed: () {},
+                ),
+              ],
             ),
           ],
         ),
@@ -281,7 +325,7 @@ class _LandingState extends State<Landing> {
                         child: Container(
                           height: 130,
                           padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10),
+                              vertical: 3, horizontal: 10),
                           width: double.infinity,
                           decoration: const BoxDecoration(
                             color: Colors.white,
@@ -347,64 +391,55 @@ class _LandingState extends State<Landing> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Row(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                cartProvider.decreaseQuantity(
-                                                    productId);
-                                              },
-                                              child: Container(
-                                                height: 30,
-                                                width: 30,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(5),
-                                                  ),
-                                                ),
-                                                child: const Center(
-                                                  child: Icon(Icons.remove),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Text(
-                                              '${cartProvider.getQuantity(productId)}',
-                                            ),
-                                            const SizedBox(width: 10),
-                                            GestureDetector(
-                                              onTap: () {
-                                                cartProvider
-                                                    .addOrIncreaseQuantity(
-                                                        product, productId);
-                                              },
-                                              child: Container(
-                                                height: 30,
-                                                width: 30,
-                                                decoration: const BoxDecoration(
-                                                  color: Color(0xFF12B981),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(5),
-                                                  ),
-                                                ),
-                                                child: const Center(
-                                                  child: Icon(
-                                                    Icons.add,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyProduct(
+                                                          id: product
+                                                              .productId),
+                                                ),
+                                              );
+                                            },
+                                            child: const Icon(
+                                                Icons.visibility_outlined,
+                                                size: 20,
+                                                color: Colors.black)),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        const Icon(Icons.favorite_border,
+                                            size: 20, color: Colors.black),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              cartProvider
+                                                  .addOrIncreaseQuantity(
+                                                      product, productId);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const MyCart()),
+                                              );
+                                            },
+                                            child: const Icon(
+                                                Icons.shopping_bag_outlined,
+                                                size: 20,
+                                                color: Colors.black)),
+                                      ],
+                                    )
                                   ],
                                 ),
                               ),
@@ -423,13 +458,13 @@ class _LandingState extends State<Landing> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Stack(
               children: <Widget>[
-                const Icon(Icons.shopping_bag),
+                const Icon(Icons.shopping_bag_outlined),
                 if (cartItemCount > 0)
                   Positioned(
                     right: 0,
@@ -440,14 +475,14 @@ class _LandingState extends State<Landing> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
+                        minWidth: 12,
+                        minHeight: 12,
                       ),
                       child: Text(
                         '$cartItemCount',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -459,11 +494,11 @@ class _LandingState extends State<Landing> {
             label: 'Cart',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
+            icon: Icon(Icons.receipt_long_outlined),
             label: 'Orders',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+            icon: Icon(Icons.account_circle_outlined),
             label: 'Profile',
           ),
         ],

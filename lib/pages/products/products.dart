@@ -178,7 +178,7 @@ class _ProductsState extends State<Products> {
                                   margin:
                                       const EdgeInsets.symmetric(vertical: 7),
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 10),
+                                      vertical: 3, horizontal: 10),
                                   width: double.infinity,
                                   decoration: const BoxDecoration(
                                       color: Colors.white,
@@ -234,7 +234,7 @@ class _ProductsState extends State<Products> {
                                                 color: Colors.grey,
                                               ),
                                               textAlign: TextAlign.left,
-                                              maxLines: 3,
+                                              maxLines: 2,
                                             ),
                                           ),
                                           const SizedBox(
@@ -251,75 +251,55 @@ class _ProductsState extends State<Products> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              Row(
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      cartProvider
-                                                          .decreaseQuantity(
-                                                              products[index]
-                                                                  .productId
-                                                                  .toString());
-                                                    },
-                                                    child: Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              width: 1,
-                                                              color:
-                                                                  Colors.grey),
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          5))),
-                                                      child: const Center(
-                                                        child:
-                                                            Icon(Icons.remove),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MyProduct(
+                                                                id: products[
+                                                                        index]
+                                                                    .productId),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                      '${cartProvider.getQuantity(products[index].productId.toString())}'),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      cartProvider
-                                                          .addOrIncreaseQuantity(
-                                                              convertToProduct(
-                                                                  products[
-                                                                      index]),
-                                                              products[index]
-                                                                  .productId
-                                                                  .toString());
-                                                    },
-                                                    child: Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      decoration: const BoxDecoration(
-                                                          color:
-                                                              Color(0xFF12B981),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          5))),
-                                                      child: const Center(
-                                                        child: Icon(
-                                                          Icons.add,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
+                                                    );
+                                                  },
+                                                  child: const Icon(
+                                                      Icons.visibility_outlined,
+                                                      size: 20,
+                                                      color: Colors.black)),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              const Icon(Icons.favorite_border,
+                                                  size: 20,
+                                                  color: Colors.black),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    cartProvider
+                                                        .addOrIncreaseQuantity(
+                                                            convertToProduct(
+                                                                products[
+                                                                    index]),
+                                                            products[index]
+                                                                .productId
+                                                                .toString());
+                                                  },
+                                                  child: const Icon(
+                                                      Icons
+                                                          .shopping_bag_outlined,
+                                                      size: 20,
+                                                      color: Colors.black)),
                                             ],
                                           )
                                         ],

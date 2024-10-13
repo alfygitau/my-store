@@ -4,14 +4,38 @@ import 'package:e_store/state/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Cart extends StatefulWidget {
-  const Cart({super.key});
+class MyCart extends StatefulWidget {
+  const MyCart({super.key});
 
   @override
-  State<Cart> createState() => _CartState();
+  State<MyCart> createState() => _MyCartState();
 }
 
-class _CartState extends State<Cart> {
+class _MyCartState extends State<MyCart> {
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Landing()),
+        );
+        break;
+      case 1:
+        print("Call Pressed");
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Checkout()),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -171,13 +195,6 @@ class _CartState extends State<Cart> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                Text(
-                                                  'Quantity: ${cartItems[index].quantity}',
-                                                  style: const TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w300),
-                                                )
                                               ],
                                             ),
                                             Row(
@@ -204,6 +221,16 @@ class _CartState extends State<Cart> {
                                                 ),
                                                 Row(
                                                   children: [
+                                                    const Text(
+                                                      'Q',
+                                                      style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
                                                     GestureDetector(
                                                       onTap: () {
                                                         cartProvider
@@ -460,65 +487,12 @@ class _CartState extends State<Cart> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: const BoxDecoration(color: Colors.white),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Landing()),
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            side: const BorderSide(color: Color(0xFF12B981)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            minimumSize: const Size(0, 35),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Text(
-                              "Home",
-                              style: TextStyle(
-                                color: Color(0xFF12B981),
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Checkout()),
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: const Color(0xFF12B981),
-                            side: const BorderSide(color: Color(0xFF12B981)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            minimumSize: const Size(0, 35),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Text(
-                              "Checkout (KES ${cart.totalPrice.toStringAsFixed(2)})",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                        Text(
+                          'Other related products',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
                         )
                       ],
                     ),
@@ -526,6 +500,85 @@ class _CartState extends State<Cart> {
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 90,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      _onItemTapped(0);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Color(0xFF12B981)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      minimumSize: const Size(0, 35),
+                    ),
+                    child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.0),
+                        child: Icon(
+                          Icons.home_outlined,
+                          color: Color(0xFF12B981),
+                        )),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      _onItemTapped(1);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Color(0xFF12B981)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      minimumSize: const Size(0, 35),
+                    ),
+                    child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.0),
+                        child: Icon(
+                          Icons.call_outlined,
+                          color: Color(0xFF12B981),
+                        )),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+                flex: 50,
+                child: OutlinedButton(
+                  onPressed: () {
+                    _onItemTapped(2);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: const Color(0xFF12B981),
+                    side: const BorderSide(color: Color(0xFF12B981)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    minimumSize: const Size(0, 35),
+                  ),
+                  child: Text(
+                    "Checkout (KES ${cart.totalPrice.toStringAsFixed(2)})",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )),
+          ],
         ),
       ),
     );
