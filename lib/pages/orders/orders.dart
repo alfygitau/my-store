@@ -62,6 +62,10 @@ class _MyOrdersState extends State<MyOrders> {
             icon: const Icon(Icons.search, color: Colors.black),
             onPressed: () {},
           ),
+          IconButton(
+            icon: const Icon(Icons.help_outline_outlined, color: Colors.black),
+            onPressed: () {},
+          ),
         ],
       ),
       backgroundColor: const Color(0xFFF3F6F9),
@@ -130,9 +134,6 @@ class _MyOrdersState extends State<MyOrders> {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -144,17 +145,7 @@ class _MyOrdersState extends State<MyOrders> {
                                               fontSize: 12,
                                               fontWeight: FontWeight.normal),
                                         ),
-                                        const Text(
-                                          'You saved 10% of the cost price',
-                                          style: TextStyle(
-                                              color: Color(0xFF12B981),
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold),
-                                        ),
                                       ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
                                     ),
                                     Row(
                                       mainAxisAlignment:
@@ -211,10 +202,21 @@ class _MyOrdersState extends State<MyOrders> {
                                                   fontWeight:
                                                       FontWeight.normal),
                                             )),
+                                        const Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'You saved 10% of the cost price',
+                                            style: TextStyle(
+                                                color: Color(0xFF12B981),
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Text(
                                           'Order status',
