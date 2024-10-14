@@ -1,4 +1,6 @@
+import 'package:e_store/pages/auth/account.dart';
 import 'package:e_store/services/address_service.dart';
+import 'package:e_store/services/product_service.dart';
 import 'package:e_store/state/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,12 +40,14 @@ class _MyAddressState extends State<MyAddress> {
     };
     bool success = await addressService.createAddress(addressData, token!);
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Address created successfully!')),
-      );
       setState(() {
         _isLoading = false;
       });
+      ProductService().showToast('Address created successfully!');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AccountProfile()),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
